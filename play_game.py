@@ -8,12 +8,17 @@ class GamePage(tk.Frame):
         self.player = "X"
         self.board = [" " for _ in range(9)]
 
-        self.label_status = tk.Label(self, text="", font=("Poppins", 14, "bold"),
+        # --- Frame Konten Utama untuk memusatkan ---
+        content_frame = tk.Frame(self, bg="#F0F0F0")
+        content_frame.pack(expand=True)
+        # ------------------------------------------
+
+        self.label_status = tk.Label(content_frame, text="", font=("Poppins", 14, "bold"),
                                      bg="#F0F0F0", fg="#333")
         self.label_status.pack(pady=10)
 
         # Papan tombol
-        self.frame_board = tk.Frame(self, bg="#F0F0F0")
+        self.frame_board = tk.Frame(content_frame, bg="#F0F0F0")
         self.frame_board.pack()
 
         self.buttons = []
@@ -27,11 +32,11 @@ class GamePage(tk.Frame):
             self.buttons.append(btn)
 
         # Tombol kontrol
-        tk.Button(self, text="Reset", font=("Poppins", 12, "bold"), bg="#4DA8DA",
+        tk.Button(content_frame, text="Reset", font=("Poppins", 12, "bold"), bg="#4DA8DA",
                   fg="white", relief="flat", width=10,
                   command=self.reset_board).pack(pady=15)
 
-        tk.Button(self, text="Kembali ke Home 🏠", font=("Poppins", 10),
+        tk.Button(content_frame, text="Kembali ke Home 🏠", font=("Poppins", 10),
                   bg="#CCCCCC", relief="flat",
                   command=lambda: controller.show_frame("HomePage")).pack()
 
@@ -42,20 +47,24 @@ class GamePage(tk.Frame):
         if self.board[index] == " ":
             self.board[index] = self.player
             self.buttons[index].config(text=self.player, state="disabled",
-                                       disabledforeground="#333")
+                                        disabledforeground="#333")
 
             if self.check_winner():
                 winner = self.controller.player1_name if self.player == "X" else self.controller.player2_name
                 messagebox.showinfo("Hasil", f"🎉 {winner} menang!")
-                self.reset_board()
+                self.disable_board() # Nonaktifkan papan setelah menang
             elif self.is_full():
                 messagebox.showinfo("Hasil", "🤝 Seri!")
-                self.reset_board()
+                self.disable_board() # Nonaktifkan papan setelah seri
             else:
                 self.player = "O" if self.player == "X" else "X"
                 self.update_turn_label()
 
-    def check_winner(self):
+    def check_winner(self, silent=False):
+        """
+        Memeriksa pemenang.
+        Jika silent=True, hanya mengembalikan True/False tanpa mengubah UI (bg tombol).
+        """
         win_patterns = [
             [0,1,2], [3,4,5], [6,7,8],
             [0,3,6], [1,4,7], [2,5,8],
@@ -63,26 +72,42 @@ class GamePage(tk.Frame):
         ]
         for pattern in win_patterns:
             if self.board[pattern[0]] == self.board[pattern[1]] == self.board[pattern[2]] != " ":
-                for i in pattern:
-                    self.buttons[i].config(bg="#A8E6CF")
+                if not silent:
+                    # Hanya sorot jika tidak dalam mode silent
+                    for i in pattern:
+                        self.buttons[i].config(bg="#A8E6CF")
                 return True
         return False
 
     def is_full(self):
         return all(cell != " " for cell in self.board)
 
+    def disable_board(self):
+        """Menonaktifkan semua tombol di papan."""
+        for btn in self.buttons:
+            btn.config(state="disabled")
+
     def reset_board(self):
+        """Mereset papan untuk permainan baru."""
         self.board = [" " for _ in range(9)]
         self.player = "X"
         for btn in self.buttons:
             btn.config(text=" ", state="normal", bg="#FFFFFF")
+        # Panggil update_turn_label setelah reset
         self.update_turn_label()
 
     def update_turn_label(self):
-        if self.player == "X":
-            self.label_status.config(text=f"Giliran: {self.controller.player1_name} (X)")
+        """Memperbarui label giliran berdasarkan pemain saat ini."""
+        # Pastikan nama pemain sudah ada sebelum mencoba mengaksesnya
+        if hasattr(self.controller, 'player1_name') and self.controller.player1_name:
+            if self.player == "X":
+                self.label_status.config(text=f"Giliran: {self.controller.player1_name} (X)")
+            else:
+                self.label_status.config(text=f"Giliran: {self.controller.player2_name} (O)")
         else:
-            self.label_status.config(text=f"Giliran: {self.controller.player2_name} (O)")
+            # Fallback jika nama belum di-set
+            self.label_status.config(text="Giliran: Player (X)")
+
 
     # ==============================
     # 🖱️ Efek Hover
