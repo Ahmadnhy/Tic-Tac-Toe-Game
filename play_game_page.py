@@ -1,6 +1,6 @@
 import tkinter as tk
-# Kita tidak lagi membutuhkan messagebox
 # from tkinter import messagebox 
+import pygame # Impor pygame untuk suara
 
 class GamePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -11,6 +11,15 @@ class GamePage(tk.Frame):
         self.game_in_progress = True # Status untuk mengabaikan klik setelah game selesai
         self.cell_size = 100 # Ukuran setiap kotak
         self.line_width = 2  # Lebar garis grid (DIKURANGI DARI 3)
+
+        # --- Inisialisasi dan Muat Suara ---
+        pygame.mixer.init()
+        try:
+            self.sound_click = pygame.mixer.Sound("sounds/click.mp3")
+            self.sound_win = pygame.mixer.Sound("sounds/win.mp3")
+            self.sound_draw = pygame.mixer.Sound("sounds/draw.mp3")
+        except pygame.error as e:
+            print(f"Error memuat file suara: {e}")
 
         # --- Frame Konten Utama untuk memusatkan ---
         content_frame = tk.Frame(self, bg="#F0F0F0")
@@ -24,7 +33,6 @@ class GamePage(tk.Frame):
         # Ukuran total = 3 * cell_size + 2 * line_width
         board_size = self.cell_size * 3 + self.line_width * 2
         
-        # --- PERUBAHAN: Menambahkan highlightthickness dan highlightbackground untuk frame ---
         self.canvas_board = tk.Canvas(content_frame, width=board_size, height=board_size, bg="#FFFFFF", 
                                       highlightthickness=2, highlightbackground="#AAAAAA")
         self.canvas_board.pack(pady=10)
@@ -47,7 +55,7 @@ class GamePage(tk.Frame):
     def on_canvas_click(self, event):
         """Menangani klik pada canvas."""
         if not self.game_in_progress:
-            return # Abaikan klik jika permainan sudah selesai
+            return 
 
         # Tentukan sel mana yang diklik
         col = event.x // (self.cell_size + self.line_width)
@@ -67,12 +75,14 @@ class GamePage(tk.Frame):
         """Logika yang terjadi saat sel yang valid diklik."""
         if self.board[index] == " ":
             self.board[index] = self.player
+            self.sound_click.play() # Mainkan suara klik
             self.draw_move(index, self.player) # Gambar X atau O di canvas
 
             # Cek pemenang
             if self.check_winner():
                 self.game_in_progress = False # Hentikan permainan
                 # Logika pindah halaman akan ditangani *setelah* animasi selesai
+                # Suara kemenangan akan diputar sebelum pindah halaman di go_to_end_page
                 # Lihat di dalam fungsi animate_line
 
             elif self.is_full():
@@ -80,6 +90,7 @@ class GamePage(tk.Frame):
                 end_frame = self.controller.frames["EndGamePage"]
                 end_frame.set_result(result_type="SERI")
                 self.controller.show_frame("EndGamePage")
+                self.sound_draw.play() # Mainkan suara seri
             
             else:
                 self.player = "O" if self.player == "X" else "X"
@@ -237,6 +248,7 @@ class GamePage(tk.Frame):
     
     def go_to_end_page(self):
         """Fungsi helper untuk pindah ke halaman akhir setelah animasi."""
+        self.sound_win.play() # Mainkan suara kemenangan
         end_frame = self.controller.frames["EndGamePage"]
         end_frame.set_result(result_type="WIN", player_symbol=self.player)
         self.controller.show_frame("EndGamePage")
