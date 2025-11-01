@@ -2,7 +2,7 @@ import tkinter as tk
 # Pastikan file home.py, play_game.py, dan end_game_page.py ada di folder yang sama
 from home_page import HomePage
 from play_game_page import GamePage
-from end_game_page import EndGamePage  # <-- TAMBAHKAN IMPORT INI
+from end_game_page import EndGamePage 
 
 class TicTacToeApp(tk.Tk):
     def __init__(self):
@@ -26,7 +26,7 @@ class TicTacToeApp(tk.Tk):
 
         self.frames = {}
         # --- PERBARUI DAFTAR FRAME ---
-        for F in (HomePage, GamePage, EndGamePage): # <-- TAMBAHKAN EndGamePage DI SINI
+        for F in (HomePage, GamePage, EndGamePage): 
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
@@ -40,11 +40,7 @@ class TicTacToeApp(tk.Tk):
         frame = self.frames[page_name]
         # Jika halaman adalah GamePage, panggil update_turn_label saat menampilkannya
         if page_name == "GamePage":
-            # Panggil reset_board *sebelum* update_turn_label saat beralih ke GamePage
-            # Ini memastikan label giliran sudah benar saat permainan dimulai
-            
-            # Cek apakah game perlu di-reset (jika baru mulai, atau game sebelumnya selesai)
-            # Kita tidak reset jika frame di-raise tapi game sedang berlangsung
+
             if frame.player != "X" or frame.is_full() or frame.check_winner(silent=True):
                 frame.reset_board()
             else:

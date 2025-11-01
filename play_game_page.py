@@ -248,7 +248,7 @@ class GamePage(tk.Frame):
     
     def go_to_end_page(self):
         """Fungsi helper untuk pindah ke halaman akhir setelah animasi."""
-        self.sound_win.play() # Mainkan suara kemenangan
+        self.sound_win.play()
         end_frame = self.controller.frames["EndGamePage"]
         end_frame.set_result(result_type="WIN", player_symbol=self.player)
         self.controller.show_frame("EndGamePage")

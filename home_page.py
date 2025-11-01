@@ -6,12 +6,11 @@ class HomePage(tk.Frame):
         super().__init__(parent, bg="#F0F0F0")
         self.controller = controller
 
-        # --- PERBAIKAN ---
         # Frame Konten Utama untuk memusatkan semua widget
         content_frame = tk.Frame(self, bg="#F0F0F0")
         # .pack(expand=True) akan memusatkan frame ini di tengah (vertikal & horizontal)
         content_frame.pack(expand=True)
-        # -------------------
+
 
         # Semua widget sekarang di-pack ke dalam content_frame
         tk.Label(content_frame, text="Tic Tac Toe", font=("Poppins", 28, "bold"), bg="#F0F0F0", fg="#222").pack(pady=20)

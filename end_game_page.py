@@ -26,10 +26,10 @@ class EndGamePage(tk.Frame):
                                         bg="#4DA8DA", fg="white", 
                                         width=20, relief="flat", 
                                         command=self.go_to_game)
-        self.btn_play_again.pack(pady=(30, 10)) # Padding atas 30, bawah 10
+        self.btn_play_again.pack(pady=(30, 10))
 
         # Tombol Kembali ke Home
-        self.btn_home = tk.Button(content_frame, text="Balik ke Home 🏠", 
+        self.btn_home = tk.Button(content_frame, text="Kembali ke Home 🏠", 
                                   font=("Poppins", 10), 
                                   bg="#CCCCCC", relief="flat", 
                                   command=lambda: self.controller.show_frame("HomePage"))
@@ -59,6 +59,6 @@ class EndGamePage(tk.Frame):
         """
         Mereset papan permainan di GamePage lalu beralih ke GamePage.
         """
-        # Penting: Reset papan *sebelum* menampilkannya
+        # Reset papan *sebelum* menampilkannya
         self.controller.frames["GamePage"].reset_board()
         self.controller.show_frame("GamePage")
