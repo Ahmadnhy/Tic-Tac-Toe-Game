@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div id="home-page" class="page-container active">
+      <div class="content-frame">
+        <h1>Tic Tac Toe</h1>
+        <p>Masukkan nama pemain</p>
+
+        <div class="form-inputs">
+          <div class="input-group">
+            <label for="player1">Player 1 (X):</label>
+            <input type="text" id="player1" placeholder="Nama Player 1" />
+          </div>
+          <div class="input-group">
+            <label for="player2">Player 2 (O):</label>
+            <input type="text" id="player2" placeholder="Nama Player 2" />
+          </div>
+        </div>
+
+        <button id="start-game-btn" class="btn btn-primary">
+          Mulai Permainan 🎮
+        </button>
+        <p id="home-error" class="error-message"></p>
+      </div>
+    </div>
+
+    <div id="game-page" class="page-container">
+      <div class="content-frame">
+        <h2 id="label-status">Giliran: Player (X)</h2>
+
+        <canvas id="tic-tac-toe-board" width="304" height="304"></canvas>
+
+        <button id="reset-game-btn" class="btn btn-primary">Reset</button>
+        <button id="back-to-home-btn" class="btn btn-secondary">
+          Kembali ke Home 🏠
+        </button>
+      </div>
+    </div>
+
+    <div id="end-page" class="page-container">
+      <div class="content-frame">
+        <h1 id="label-title">WINNER</h1>
+        <p id="label-subtitle">Nama Player (X)</p>
+
+        <button id="play-again-btn" class="btn btn-primary">
+          Main Lagi 🔄
+        </button>
+        <button id="back-to-home-btn-2" class="btn btn-secondary">
+          Kembali ke Home 🏠
+        </button>
+      </div>
+    </div>
+
+    <script src="assets/js/script.js" defer></script>
+  </body>
+</html>
