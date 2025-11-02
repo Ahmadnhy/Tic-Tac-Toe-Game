@@ -31,8 +31,8 @@ if __name__ == "__main__":
         'index.html',  # File HTML yang akan dimuat
         js_api=api,      # Objek yang akan diekspos ke JS
         resizable=False,
-        width=500,
-        height=550       
+        width=700,
+        height=700       
     )
 
     # Daftarkan fungsi on_closed

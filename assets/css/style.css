@@ -54,10 +54,13 @@ body {
 .content-frame {
   width: 100%;
   max-width: 400px; /* Lebar maksimum untuk konten */
-  background: rgba(255, 255, 255, 0.8); /* 🔹 sedikit transparan agar kontras */
+  background: rgba(255, 255, 255, 0.25); /* 🔹 Efek kaca transparan */
+  backdrop-filter: blur(4px); /* 🔹 Efek blur untuk kaca */
+  -webkit-backdrop-filter: blur(4px); /* 🔹 Dukungan untuk Safari */
+  border: 1px solid rgba(255, 255, 255, 0.18); /* 🔹 Border tipis untuk kaca */
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); /* 🔹 Shadow lebih lembut */
 }
 
 /* Judul dan Teks */
