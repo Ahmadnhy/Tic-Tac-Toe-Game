@@ -3,7 +3,7 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #f0f0f0;
+  background-color: transparent; /* 🔹 ganti dari abu2 jadi transparan */
   color: #333;
   margin: 0;
   padding: 0;
@@ -12,6 +12,27 @@ body {
   align-items: center;
   height: 100vh;
   overflow: hidden; /* Mencegah body scroll */
+}
+
+/* 🔹 Pastikan html & body penuh layar */
+html,
+body {
+  height: 100%;
+}
+
+/* ===== Background pattern ===== */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../background.jpg");
+  background-repeat: repeat;
+  background-size: auto;
+  background-position: center;
+  z-index: -1; /* Di belakang semua konten */
+  opacity: 0.85; /* Sedikit transparan agar teks tetap jelas */
 }
 
 /* Kontainer Halaman */
@@ -33,6 +54,10 @@ body {
 .content-frame {
   width: 100%;
   max-width: 400px; /* Lebar maksimum untuk konten */
+  background: rgba(255, 255, 255, 0.8); /* 🔹 sedikit transparan agar kontras */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Judul dan Teks */
@@ -127,7 +152,6 @@ p {
   border: 2px solid #aaaaaa;
   border-radius: 8px;
   margin-bottom: 20px;
-  /* Ukuran diatur di HTML (304x304) */
 }
 
 /* Pesan Error (Halaman Home) */
