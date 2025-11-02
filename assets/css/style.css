@@ -1,0 +1,140 @@
+/* Global style dan Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden; /* Mencegah body scroll */
+}
+
+/* Kontainer Halaman */
+.page-container {
+  width: 100%;
+  height: 100%;
+  display: none; /* Sembunyikan semua halaman secara default */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  box-sizing: border-box; /* Pastikan padding tidak menambah ukuran */
+}
+
+.page-container.active {
+  display: flex; /* Tampilkan halaman yang aktif */
+}
+
+.content-frame {
+  width: 100%;
+  max-width: 400px; /* Lebar maksimum untuk konten */
+}
+
+/* Judul dan Teks */
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 10px;
+}
+h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+p {
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+/* Form dan Input (Halaman Home) */
+.form-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Label rata kiri */
+  width: 100%;
+}
+.input-group label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.input-group input[type="text"] {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box; /* Padding tidak menambah lebar */
+  transition: border-color 0.2s;
+}
+.input-group input[type="text"]:focus {
+  border-color: #4da8da;
+  outline: none;
+}
+
+/* Tombol */
+.btn {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  width: 100%; /* Tombol lebar penuh */
+  max-width: 300px; /* Lebar maksimum tombol */
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+.btn:active {
+  transform: scale(0.98); /* Efek klik */
+}
+
+.btn-primary {
+  background-color: #4da8da;
+  color: white;
+}
+.btn-primary:hover {
+  background-color: #3a98c8;
+}
+
+.btn-secondary {
+  background-color: #cccccc;
+  color: #333;
+}
+.btn-secondary:hover {
+  background-color: #b8b8b8;
+}
+
+/* Papan Canvas (Halaman Game) */
+#tic-tac-toe-board {
+  background-color: #ffffff;
+  border: 2px solid #aaaaaa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  /* Ukuran diatur di HTML (304x304) */
+}
+
+/* Pesan Error (Halaman Home) */
+.error-message {
+  color: #e63946; /* Merah */
+  font-size: 12px;
+  font-weight: 600;
+  height: 15px; /* Beri ruang agar layout tidak lompat */
+  margin-top: 15px;
+}
