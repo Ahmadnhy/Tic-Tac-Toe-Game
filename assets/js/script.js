@@ -57,6 +57,12 @@ window.addEventListener("pywebviewready", () => {
   const btnPlayAgain = document.getElementById("play-again-btn");
   const btnBackToHome2 = document.getElementById("back-to-home-btn-2");
 
+  // ===== Referensi Modal Credits =====
+  const creditsLink = document.getElementById("credits-link");
+  const creditsModal = document.getElementById("credits-modal");
+  const modalCloseBtn = document.getElementById("modal-close");
+  // ====================================
+
   // ==================================================================
   // Fungsi Helper (Dipanggil oleh Python atau Event Listener)
   // ==================================================================
@@ -372,9 +378,38 @@ window.addEventListener("pywebviewready", () => {
     window.pywebview.api.go_to_home();
   });
 
+  // ===== Event Listener Modal Credits =====
+  if (creditsLink) {
+    creditsLink.addEventListener("click", (e) => {
+      e.preventDefault(); // Mencegah link pindah halaman
+      if (creditsModal) {
+        creditsModal.style.display = "flex"; // Tampilkan modal
+      }
+    });
+  }
+
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener("click", () => { // PERBAIKAN: () => {
+      if (creditsModal) {
+        creditsModal.style.display = "none"; // Sembunyikan modal
+      }
+    });
+  }
+
+  if (creditsModal) {
+    // Klik di luar konten modal (di overlay) akan menutupnya
+    creditsModal.addEventListener("click", (e) => {
+      if (e.target === creditsModal) {
+        creditsModal.style.display = "none";
+      }
+    });
+  }
+  // ========================================
+
   // ==================================================================
   // Inisialisasi Awal
   // ==================================================================
   drawGrid(); // Gambar grid saat script dimuat
   window.showPage("home-page"); // Tampilkan halaman home
 });
+

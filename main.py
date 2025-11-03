@@ -30,9 +30,8 @@ if __name__ == "__main__":
         'Tic Tac Toe - 404',
         'index.html',  # File HTML yang akan dimuat
         js_api=api,      # Objek yang akan diekspos ke JS
-        resizable=False,
-        width=700,
-        height=700,
+        maximized=True,
+        resizable=True,
         # threaded=True # Menjalankan GUI di thread terpisah agar tidak 'Not Responding'
     )
 
