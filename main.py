@@ -32,7 +32,8 @@ if __name__ == "__main__":
         js_api=api,      # Objek yang akan diekspos ke JS
         resizable=False,
         width=700,
-        height=700       
+        height=700,
+        # threaded=True # Menjalankan GUI di thread terpisah agar tidak 'Not Responding'
     )
 
     # Daftarkan fungsi on_closed
@@ -42,4 +43,5 @@ if __name__ == "__main__":
     api.set_window(window)
 
     # 4. Mulai aplikasi
-    webview.start()
+    # Menambahkan 'debug=True' membantu saat pengembangan.
+    webview.start(private_mode=False)
