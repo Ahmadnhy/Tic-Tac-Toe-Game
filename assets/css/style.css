@@ -4,7 +4,7 @@
 body {
   font-family: "Poppins", sans-serif;
   background-color: transparent; /* 🔹 ganti dari abu2 jadi transparan */
-  color: #333;
+  color: #f0f0f0;
   margin: 0;
   padding: 0;
   display: flex;
@@ -32,7 +32,7 @@ body {
   background-size: auto;
   background-position: center;
   z-index: -1; /* Di belakang semua konten */
-  opacity: 0.85; /* Sedikit transparan agar teks tetap jelas */
+  opacity: 1; 
 }
 
 /* Kontainer Halaman */
@@ -54,26 +54,26 @@ body {
 .content-frame {
   width: 100%;
   max-width: 400px; /* Lebar maksimum untuk konten */
-  background: rgba(255, 255, 255, 0.25); /* 🔹 Efek kaca transparan */
-  backdrop-filter: blur(4px); /* 🔹 Efek blur untuk kaca */
-  -webkit-backdrop-filter: blur(4px); /* 🔹 Dukungan untuk Safari */
-  border: 1px solid rgba(255, 255, 255, 0.18); /* 🔹 Border tipis untuk kaca */
+  background: rgba(255, 255, 255, 0.1); /* 🔹 Efek kaca transparan */
+  backdrop-filter: blur(8px); /* 🔹 Efek blur untuk kaca */
+  -webkit-backdrop-filter: blur(8px); /* 🔹 Dukungan untuk Safari */
+  border: 1px solid rgba(255, 255, 255, 0.05); /* 🔹 Border tipis untuk kaca */
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); /* 🔹 Shadow lebih lembut */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* 🔹 Shadow lebih lembut */
 }
 
 /* Judul dan Teks */
 h1 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
-  color: #222;
+  color: #ffffff;
   margin-bottom: 10px;
 }
 h2 {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #ffffff;
   margin-bottom: 15px;
 }
 p {
@@ -152,8 +152,18 @@ p {
 /* Papan Canvas (Halaman Game) */
 #tic-tac-toe-board {
   background-color: #ffffff;
-  border: 2px solid #aaaaaa;
-  border-radius: 8px;
+  border: 2px solid #5a4b4b;
+  border-radius: 16px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 300px;
+  height: 300px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
   margin-bottom: 20px;
 }
 
