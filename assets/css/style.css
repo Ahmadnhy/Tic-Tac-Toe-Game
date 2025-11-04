@@ -301,3 +301,28 @@ p {
 .social-links a:hover svg {
   stroke: #4da8da; /* Warna ikon saat hover */
 }
+
+
+/* volume slider */
+#settings-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-Index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
+}
+
+.volume-icon {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  margin-right: 10px;
+}
+
+#volume-slider {
+  width: 100px;
+}

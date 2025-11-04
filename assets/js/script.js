@@ -404,6 +404,36 @@ window.addEventListener("pywebviewready", () => {
       }
     });
   }
+
+  // pengaturan volume
+  document.addEventListener('DOMContentLoaded', () => {
+  const volumeSlider = document.getElementById('volume-slider');
+
+  const savedVolume = localStorage.getItem('ticTacToeVolume') || 1.0;
+
+  volumeSlider.value = savedVolume;
+  setVolume(savedVolume);
+
+  volumeSlider.addEventListener('input', (event) => {
+    const newVolume = event.target.value;
+
+    // atur volume
+    setVolume(newVolume);
+
+    // simpan preferensi volume pengguna
+    localStorage.setItem('ticTacToeVolume', newVolume);
+  });
+
+  function setVolume(volume) {
+    // Dapatkan semua elemen audio dengan class 'sound'
+    const sounds = document.querySelectorAll('audio.sound');
+
+    // Loop melalui setiap elemen audio dan set volume
+    sounds.forEach(sound => {
+      sound.volume = volume;
+    });
+  }
+});
   // ========================================
 
   // ==================================================================
