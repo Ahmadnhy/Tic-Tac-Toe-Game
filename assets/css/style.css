@@ -238,6 +238,12 @@ p {
   text-align: center;
 }
 
+/* Sesuaikan modal-content untuk modal settings agar lebih kecil */
+#settings-modal .modal-content {
+  max-width: 400px; /* Lebar modal settings */
+  text-align: left; /* Konten settings rata kiri */
+}
+
 .modal-close-btn {
   position: absolute;
   top: 10px;
@@ -302,31 +308,127 @@ p {
   stroke: #4da8da; /* Warna ikon saat hover */
 }
 
+/* ================================== */
+/* STYLING BARU: Tombol & Modal Settings */
+/* ================================== */
 
-/* volume slider */
-#settings-container {
+/* Tombol Settings (menggantikan #settings-container) */
+.settings-btn-link {
   position: absolute;
   top: 20px; /* Sejajarkan dengan tombol credits */
   left: 140px; /* Posisikan di kanan tombol credits */
-  z-Index: 10;
+  z-index: 10;
   display: flex;
   align-items: center;
-  padding: 8px 15px;
+  padding: 8px 15px; /* Dibuat sedikit lebih kotak */
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255,255, 0.05);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.volume-icon {
+.settings-btn-link:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.settings-btn-link i {
   font-size: 1.2rem;
   color: #e0e0e0;
-  margin-right: 10px;
 }
 
-#volume-slider {
-  width: 100px;
+/* Konten di dalam Modal Settings */
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Jarak antar item setting */
+  margin-top: 30px; /* Jarak dari judul modal */
+  padding: 0 10px;
 }
 
+.setting-item {
+  display: flex;
+  justify-content: space-between; /* Label di kiri, kontrol di kanan */
+  align-items: center;
+  width: 100%;
+}
+
+.setting-item label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+/* Kontainer untuk slider volume di dalam modal */
+.volume-control-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Jarak antara ikon dan slider */
+}
+
+.volume-control-container .volume-icon {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  margin: 0; /* Hapus margin default jika ada */
+}
+
+.volume-control-container #volume-slider {
+  width: 150px; /* Lebar slider di dalam modal */
+}
+
+/* Style untuk Toggle Switch (On/Off Suara) */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px; /* Lebar toggle */
+  height: 28px; /* Tinggi toggle */
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #777; /* Warna saat off */
+  transition: 0.4s;
+}
+
+.toggle-switch .slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+.toggle-switch input:checked + .slider {
+  background-color: #4da8da; /* Warna primer (saat on) */
+}
+
+.toggle-switch input:checked + .slider:before {
+  transform: translateX(22px); /* Jarak geser */
+}
+
+/* Membuat toggle bulat */
+.toggle-switch .slider.round {
+  border-radius: 34px;
+}
+
+.toggle-switch .slider.round:before {
+  border-radius: 50%;
+}

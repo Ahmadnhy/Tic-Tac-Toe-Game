@@ -63,6 +63,14 @@ window.addEventListener("pywebviewready", () => {
   const modalCloseBtn = document.getElementById("modal-close");
   // ====================================
 
+  // ===== Referensi Modal Settings =====
+  const settingsBtn = document.getElementById("settings-btn");
+  const settingsModal = document.getElementById("settings-modal");
+  const settingsModalClose = document.getElementById("settings-modal-close");
+  const soundToggle = document.getElementById("sound-toggle");
+  const volumeSlider = document.getElementById("volume-slider");
+  // ====================================
+
   // ==================================================================
   // Fungsi Helper (Dipanggil oleh Python atau Event Listener)
   // ==================================================================
@@ -389,7 +397,8 @@ window.addEventListener("pywebviewready", () => {
   }
 
   if (modalCloseBtn) {
-    modalCloseBtn.addEventListener("click", () => { // PERBAIKAN: () => {
+    modalCloseBtn.addEventListener("click", () => {
+      // PERBAIKAN: () => {
       if (creditsModal) {
         creditsModal.style.display = "none"; // Sembunyikan modal
       }
@@ -405,37 +414,104 @@ window.addEventListener("pywebviewready", () => {
     });
   }
 
-  // ==================================================================
-  // Pengaturan Volume (Terhubung ke Python)
-  // ==================================================================
-  const volumeSlider = document.getElementById('volume-slider');
-
-  /**
-   * Mengirim nilai volume ke backend Python dan menyimpannya di local storage.
-   * @param {number|string} volume Nilai dari 0.0 hingga 1.0
-   */
-  function setVolume(volume) {
-    const numericVolume = parseFloat(volume);
-    // Panggil API Python untuk mengatur volume suara pygame
-    if (window.pywebview && window.pywebview.api) {
-      window.pywebview.api.set_volume(numericVolume);
-    }
-    // Simpan preferensi volume pengguna di browser
-    localStorage.setItem('ticTacToeVolume', numericVolume);
+  // ===== Event Listener Modal Settings =====
+  if (settingsBtn) {
+    settingsBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // Mencegah link pindah halaman
+      if (settingsModal) {
+        settingsModal.style.display = "flex"; // Tampilkan modal
+      }
+    });
   }
 
-  // Ambil volume yang tersimpan atau gunakan default 1.0
-  const savedVolume = localStorage.getItem('ticTacToeVolume') || 1.0;
-  volumeSlider.value = savedVolume;
-  setVolume(savedVolume); // Atur volume awal saat aplikasi dimuat
+  if (settingsModalClose) {
+    settingsModalClose.addEventListener("click", () => {
+      if (settingsModal) {
+        settingsModal.style.display = "none"; // Sembunyikan modal
+      }
+    });
+  }
 
-  // Tambahkan listener untuk setiap kali slider digerakkan
-  volumeSlider.addEventListener('input', (event) => setVolume(event.target.value));
+  if (settingsModal) {
+    // Klik di luar konten modal (di overlay) akan menutupnya
+    settingsModal.addEventListener("click", (e) => {
+      if (e.target === settingsModal) {
+        settingsModal.style.display = "none";
+      }
+    });
+  }
+  // ========================================
+
+  // ==================================================================
+  // Logika Volume dan Suara (REVISI TOTAL)
+  // ==================================================================
+
+  /**
+   * Mengirim nilai volume HANYA ke backend Python.
+   * Tidak menyimpan state di localStorage di sini.
+   * @param {number|string} volume Nilai dari 0.0 hingga 1.0
+   */
+  function setPythonVolume(volume) {
+    const numericVolume = parseFloat(volume);
+    if (window.pywebview && window.pywebview.api) {
+      try {
+        window.pywebview.api.set_volume(numericVolume);
+      } catch (e) {
+        console.error("Gagal mengatur volume di Python:", e);
+      }
+    }
+  }
+
+  /**
+   * Fungsi utama untuk memperbarui status audio.
+   * Membaca state dari toggle dan slider,
+   * lalu memanggil setPythonVolume dan menyimpan ke localStorage.
+   */
+  function updateAudioSettings() {
+    // 1. Baca state dari elemen HTML
+    const isMuted = !soundToggle.checked;
+    const intendedVolume = volumeSlider.value;
+
+    // 2. Simpan preferensi ke localStorage
+    localStorage.setItem("ticTacToeMuted", isMuted);
+    localStorage.setItem("ticTacToeVolume", intendedVolume);
+
+    // 3. Terapkan state
+    if (isMuted) {
+      volumeSlider.disabled = true;
+      setPythonVolume(0); // Mute Python
+    } else {
+      volumeSlider.disabled = false;
+      setPythonVolume(intendedVolume); // Atur volume Python
+    }
+  }
+
+  /**
+   * Memuat pengaturan audio dari localStorage saat aplikasi dimulai.
+   */
+  function loadAudioSettings() {
+    const savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
+    const savedMuted = localStorage.getItem("ticTacToeMuted") === "true";
+
+    // Atur elemen HTML sesuai state yang disimpan
+    volumeSlider.value = savedVolume;
+    soundToggle.checked = !savedMuted;
+
+    // Terapkan state yang dimuat (mengatur volume di Python dan disable slider jika perlu)
+    updateAudioSettings();
+  }
+
+  // Tambahkan listener untuk setiap kali slider atau toggle diubah
+  volumeSlider.addEventListener("input", updateAudioSettings);
+  soundToggle.addEventListener("change", updateAudioSettings);
   // ========================================
 
   // ==================================================================
   // Inisialisasi Awal
   // ==================================================================
+
+  loadAudioSettings(); // Panggil fungsi untuk memuat setelan audio
+
   drawGrid(); // Gambar grid saat script dimuat
   window.showPage("home-page"); // Tampilkan halaman home
 });
