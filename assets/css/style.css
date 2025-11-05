@@ -1,6 +1,17 @@
 /* Global style dan Font */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
 
+:root{
+  --bg-color: rgba(21,22,24,1);        /* fallback background (dipakai bila mau override) */
+  --panel-bg: rgba(255,255,255,0.08);  /* modal / panel background */
+  --overlay-bg: rgba(24,24,24,0.7);    /* overlay warna */
+  --accent-color: #4da8da;             /* tombol / border highlight */
+  --x-color: #ff715b;                  /* warna X di canvas */
+  --o-color: #7bd389;                  /* warna O di canvas */
+  --text-light: #f0f0f0;
+  --text-dark: #333333;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   background-color: transparent;
@@ -599,4 +610,121 @@ p {
 
 .toggle-switch .slider.round:before {
   border-radius: 50%;
+}
+
+/* Color picker (Settings)*/
+.color-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.color-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.12);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.color-circle:hover {
+  transform: scale(1.12);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.color-circle.active {
+  transform: scale(1.18);
+  border-color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+@media (max-width: 420px) {
+  .color-circle { width: 28px; height: 28px; }
+}
+
+.modal-overlay {
+  background: var(--overlay-bg);
+}
+
+.modal-content {
+  background: var(--panel-bg);
+  color: var(--text-light);
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+.btn-primary:hover { filter: brightness(0.92); }
+
+.team-photo {
+  border: 2px solid var(--accent-color);
+}
+
+body.theme-clear-bg {
+  background-color: var(--bg-color);
+}
+
+body, .modal-content, .btn-primary, .team-photo {
+  transition: background-color 0.28s ease, color 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+body.theme-clear-bg .background,
+body.theme-clear-bg .background-overlay {
+  display: none;
+}
+
+.color-settings {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 10px;
+  gap: 20px;
+}
+
+.color-picker-group label {
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.color-picker-group input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  background: none;
+}
+
+/* kecil untuk color picker dan tombol di settings */
+.color-free {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+#bg-color-picker {
+  width: 44px;
+  height: 36px;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.color-picker-group {
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.color-settings {
+  display:flex;
+  gap:16px;
+  align-items:center;
+  justify-content:flex-end;
 }
