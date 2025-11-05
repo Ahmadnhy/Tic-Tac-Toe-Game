@@ -405,35 +405,32 @@ window.addEventListener("pywebviewready", () => {
     });
   }
 
-  // pengaturan volume
-  document.addEventListener('DOMContentLoaded', () => {
+  // ==================================================================
+  // Pengaturan Volume (Terhubung ke Python)
+  // ==================================================================
   const volumeSlider = document.getElementById('volume-slider');
 
-  const savedVolume = localStorage.getItem('ticTacToeVolume') || 1.0;
-
-  volumeSlider.value = savedVolume;
-  setVolume(savedVolume);
-
-  volumeSlider.addEventListener('input', (event) => {
-    const newVolume = event.target.value;
-
-    // atur volume
-    setVolume(newVolume);
-
-    // simpan preferensi volume pengguna
-    localStorage.setItem('ticTacToeVolume', newVolume);
-  });
-
+  /**
+   * Mengirim nilai volume ke backend Python dan menyimpannya di local storage.
+   * @param {number|string} volume Nilai dari 0.0 hingga 1.0
+   */
   function setVolume(volume) {
-    // Dapatkan semua elemen audio dengan class 'sound'
-    const sounds = document.querySelectorAll('audio.sound');
-
-    // Loop melalui setiap elemen audio dan set volume
-    sounds.forEach(sound => {
-      sound.volume = volume;
-    });
+    const numericVolume = parseFloat(volume);
+    // Panggil API Python untuk mengatur volume suara pygame
+    if (window.pywebview && window.pywebview.api) {
+      window.pywebview.api.set_volume(numericVolume);
+    }
+    // Simpan preferensi volume pengguna di browser
+    localStorage.setItem('ticTacToeVolume', numericVolume);
   }
-});
+
+  // Ambil volume yang tersimpan atau gunakan default 1.0
+  const savedVolume = localStorage.getItem('ticTacToeVolume') || 1.0;
+  volumeSlider.value = savedVolume;
+  setVolume(savedVolume); // Atur volume awal saat aplikasi dimuat
+
+  // Tambahkan listener untuk setiap kali slider digerakkan
+  volumeSlider.addEventListener('input', (event) => setVolume(event.target.value));
   // ========================================
 
   // ==================================================================
@@ -442,4 +439,3 @@ window.addEventListener("pywebviewready", () => {
   drawGrid(); // Gambar grid saat script dimuat
   window.showPage("home-page"); // Tampilkan halaman home
 });
-

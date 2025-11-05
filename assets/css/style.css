@@ -305,16 +305,19 @@ p {
 
 /* volume slider */
 #settings-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-Index: 1000;
+  position: absolute;
+  top: 20px; /* Sejajarkan dengan tombol credits */
+  left: 140px; /* Posisikan di kanan tombol credits */
+  z-Index: 10;
   display: flex;
   align-items: center;
-  padding: 10px 15px;
+  padding: 8px 15px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3)
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255,255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)
 }
 
 .volume-icon {
@@ -326,3 +329,4 @@ p {
 #volume-slider {
   width: 100px;
 }
+

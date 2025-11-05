@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Tac Toe - 404</title>
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   </head>
   <body>
     <div class="background"></div>
 
+    <!-- Tombol Credits dipindahkan ke sini -->
+    <a id="credits-link" class="credits-link">Credits</a>
+
     <div id="home-page" class="page-container active">
-      <a id="credits-link" class="credits-link">Credits</a>
       <div class="content-frame">
         <h1>Tic Tac Toe</h1>
         <p>Masukkan nama pemain</p>
@@ -61,7 +64,7 @@
     </div>
 
     <!-- Menambahkan setting volume -->
-    <div class="settings-container">
+    <div id="settings-container">
       <i class="fas fa-volume-up volume-icon"></i>
       <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1.0">
     </div>
