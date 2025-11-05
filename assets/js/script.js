@@ -68,6 +68,8 @@ window.addEventListener("pywebviewready", () => {
   const settingsModal = document.getElementById("settings-modal");
   const settingsModalClose = document.getElementById("settings-modal-close");
   const soundToggle = document.getElementById("sound-toggle");
+
+  // PERUBAHAN: Referensi slider dinyalakan kembali
   const volumeSlider = document.getElementById("volume-slider");
   // ====================================
 
@@ -318,8 +320,6 @@ window.addEventListener("pywebviewready", () => {
 
   // Halaman Home
   btnStartGame.addEventListener("click", () => {
-    // --- PERBAIKAN DIMULAI DI SINI ---
-
     // 1. Ambil nilai dan hapus spasi di awal/akhir
     const name1 = inputPlayer1.value.trim();
     const name2 = inputPlayer2.value.trim();
@@ -334,7 +334,6 @@ window.addEventListener("pywebviewready", () => {
       // 3. Baru panggil API Python jika nama sudah valid
       window.pywebview.api.start_game(name1, name2);
     }
-    // --- PERBAIKAN SELESAI ---
   });
 
   // Halaman Game
@@ -398,7 +397,6 @@ window.addEventListener("pywebviewready", () => {
 
   if (modalCloseBtn) {
     modalCloseBtn.addEventListener("click", () => {
-      // PERBAIKAN: () => {
       if (creditsModal) {
         creditsModal.style.display = "none"; // Sembunyikan modal
       }
@@ -442,13 +440,15 @@ window.addEventListener("pywebviewready", () => {
   }
   // ========================================
 
-  // ==================================================================
-  // Logika Volume dan Suara (REVISI TOTAL)
-  // ==================================================================
+  // ==================================
+  // PERBAIKAN: Logika Volume (v8 - Final)
+  // ==================================
+
+  // Variabel penanda untuk mencegah event loop
+  let isProgrammaticallyChanging = false;
 
   /**
    * Mengirim nilai volume HANYA ke backend Python.
-   * Tidak menyimpan state di localStorage di sini.
    * @param {number|string} volume Nilai dari 0.0 hingga 1.0
    */
   function setPythonVolume(volume) {
@@ -463,47 +463,88 @@ window.addEventListener("pywebviewready", () => {
   }
 
   /**
-   * Fungsi utama untuk memperbarui status audio.
-   * Membaca state dari toggle dan slider,
-   * lalu memanggil setPythonVolume dan menyimpan ke localStorage.
+   * Memuat pengaturan audio.
+   * (Aturan 1: Selalu Toggle On)
    */
-  function updateAudioSettings() {
-    // 1. Baca state dari elemen HTML
-    const isMuted = !soundToggle.checked;
-    const intendedVolume = volumeSlider.value;
+  function loadAudioSettings() {
+    let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
+    const isMuted = false; // Aturan 1: Selalu ON
 
-    // 2. Simpan preferensi ke localStorage
+    soundToggle.checked = true;
+    volumeSlider.disabled = false;
+
+    if (parseFloat(savedVolume) === 0) {
+      savedVolume = 1.0;
+    }
+    volumeSlider.value = savedVolume;
+    setPythonVolume(savedVolume);
+
     localStorage.setItem("ticTacToeMuted", isMuted);
-    localStorage.setItem("ticTacToeVolume", intendedVolume);
+    localStorage.setItem("ticTacToeVolume", savedVolume);
+  }
 
-    // 3. Terapkan state
-    if (isMuted) {
-      volumeSlider.disabled = true;
-      setPythonVolume(0); // Mute Python
-    } else {
-      volumeSlider.disabled = false;
-      setPythonVolume(intendedVolume); // Atur volume Python
+  /**
+   * Dipanggil HANYA saat SLIDER digerakkan oleh PENGGUNA.
+   * (Aturan 4: Slider ke 0 -> Toggle ikut Off)
+   */
+  function handleSliderInput(event) {
+    if (isProgrammaticallyChanging) return;
+
+    const intendedVolume = event.target.value;
+    localStorage.setItem("ticTacToeVolume", intendedVolume);
+    setPythonVolume(intendedVolume);
+
+    if (parseFloat(intendedVolume) === 0 && soundToggle.checked) {
+      // Aturan 4
+      isProgrammaticallyChanging = true;
+      soundToggle.checked = false;
+      // 'change' event akan memicu handleToggleChange
+      isProgrammaticallyChanging = false;
+    } else if (parseFloat(intendedVolume) > 0 && !soundToggle.checked) {
+      // Bonus: Jika slider digerakkan dari 0, hidupkan lagi toggle
+      isProgrammaticallyChanging = true;
+      soundToggle.checked = true;
+      // 'change' event akan memicu handleToggleChange
+      isProgrammaticallyChanging = false;
     }
   }
 
   /**
-   * Memuat pengaturan audio dari localStorage saat aplikasi dimulai.
+   * Dipanggil HANYA saat TOGGLE diubah oleh PENGGUNA
+   * ATAU oleh handleSliderInput.
    */
-  function loadAudioSettings() {
-    const savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
-    const savedMuted = localStorage.getItem("ticTacToeMuted") === "true";
+  function handleToggleChange(event) {
+    if (isProgrammaticallyChanging) return;
 
-    // Atur elemen HTML sesuai state yang disimpan
-    volumeSlider.value = savedVolume;
-    soundToggle.checked = !savedMuted;
+    const isMuted = !soundToggle.checked;
+    localStorage.setItem("ticTacToeMuted", isMuted);
 
-    // Terapkan state yang dimuat (mengatur volume di Python dan disable slider jika perlu)
-    updateAudioSettings();
+    if (isMuted) {
+      // Aturan 2: Toggle Off -> Slider disabled
+      volumeSlider.disabled = true;
+      setPythonVolume(0);
+    } else {
+      // Aturan 3: Toggle On -> Slider enabled
+      volumeSlider.disabled = false;
+      let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
+
+      // Aturan 3: ...dan volume kembali (ke 1.0 jika sebelumnya 0)
+      if (parseFloat(savedVolume) === 0) {
+        savedVolume = 1.0;
+        localStorage.setItem("ticTacToeVolume", savedVolume);
+      }
+
+      isProgrammaticallyChanging = true;
+      volumeSlider.value = savedVolume;
+      isProgrammaticallyChanging = false;
+
+      setPythonVolume(savedVolume);
+    }
   }
 
-  // Tambahkan listener untuk setiap kali slider atau toggle diubah
-  volumeSlider.addEventListener("input", updateAudioSettings);
-  soundToggle.addEventListener("change", updateAudioSettings);
+  // Tambahkan listener baru yang terpisah
+  volumeSlider.addEventListener("input", handleSliderInput);
+  soundToggle.addEventListener("change", handleToggleChange);
   // ========================================
 
   // ==================================================================

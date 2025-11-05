@@ -13,11 +13,14 @@
   <body>
     <div class="background"></div>
 
-    <a id="credits-link" class="credits-link">Credits</a>
-
-    <a id="settings-btn" class="settings-btn-link">
-      <i class="fas fa-cog"></i>
-    </a>
+    <div class="top-left-controls">
+      <a id="credits-link" class="credits-link">
+        Credits <i class="fas fa-info-circle"></i>
+      </a>
+      <a id="settings-btn" class="settings-btn-link">
+        Settings <i class="fas fa-cog"></i>
+      </a>
+    </div>
 
     <div id="home-page" class="page-container active">
       <div class="content-frame">
@@ -79,7 +82,8 @@
             <label for="sound-toggle">Suara</label>
             <div class="toggle-switch">
               <input type="checkbox" id="sound-toggle" checked />
-              <span class="slider round"></span>
+
+              <label class="slider round" for="sound-toggle"></label>
             </div>
           </div>
 
