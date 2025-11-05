@@ -35,16 +35,24 @@ window.addEventListener("pywebviewready", () => {
 
   // Halaman
   const pages = {
+    mainMenu: document.getElementById("main-menu-page"),
     home: document.getElementById("home-page"),
     game: document.getElementById("game-page"),
     end: document.getElementById("end-page"),
   };
 
-  // Halaman Home
+  // Halaman Main Menu
+  const btnMainMenuStart = document.getElementById("main-menu-start-btn");
+  const btnMainMenuSettings = document.getElementById("main-menu-settings-btn");
+  const btnMainMenuCredits = document.getElementById("main-menu-credits-btn");
+  const btnMainMenuExit = document.getElementById("main-menu-exit-btn"); // BARU
+
+  // Halaman Home (Player Name)
   const btnStartGame = document.getElementById("start-game-btn");
   const inputPlayer1 = document.getElementById("player1");
   const inputPlayer2 = document.getElementById("player2");
   const homeError = document.getElementById("home-error");
+  const btnBackToMainMenu = document.getElementById("back-to-main-menu-btn");
 
   // Halaman Game
   const labelStatus = document.getElementById("label-status");
@@ -57,21 +65,15 @@ window.addEventListener("pywebviewready", () => {
   const btnPlayAgain = document.getElementById("play-again-btn");
   const btnBackToHome2 = document.getElementById("back-to-home-btn-2");
 
-  // ===== Referensi Modal Credits =====
-  const creditsLink = document.getElementById("credits-link");
+  // Referensi Modal Credits
   const creditsModal = document.getElementById("credits-modal");
   const modalCloseBtn = document.getElementById("modal-close");
-  // ====================================
 
-  // ===== Referensi Modal Settings =====
-  const settingsBtn = document.getElementById("settings-btn");
+  // Referensi Modal Settings
   const settingsModal = document.getElementById("settings-modal");
   const settingsModalClose = document.getElementById("settings-modal-close");
   const soundToggle = document.getElementById("sound-toggle");
-
-  // PERUBAHAN: Referensi slider dinyalakan kembali
   const volumeSlider = document.getElementById("volume-slider");
-  // ====================================
 
   // ==================================================================
   // Fungsi Helper (Dipanggil oleh Python atau Event Listener)
@@ -79,17 +81,25 @@ window.addEventListener("pywebviewready", () => {
 
   /**
    * Menampilkan halaman yang ditentukan dan menyembunyikan yang lain.
-   * @param {string} pageId ('home-page', 'game-page', 'end-page')
+   * @param {string} pageId ('main-menu-page', 'home-page', 'game-page', 'end-page')
    */
   window.showPage = (pageId) => {
     for (const id in pages) {
       if (pages.hasOwnProperty(id)) {
-        pages[id].classList.remove("active");
+        if (pages[id]) {
+          pages[id].classList.remove("active");
+        }
       }
     }
-    document.getElementById(pageId).classList.add("active");
 
-    // Jika pindah ke home, bersihkan input
+    const pageToShow = document.getElementById(pageId);
+    if (pageToShow) {
+      pageToShow.classList.add("active");
+    } else {
+      console.error("Halaman tidak ditemukan:", pageId);
+    }
+
+    // Jika pindah ke home (halaman input nama), bersihkan input
     if (pageId === "home-page") {
       inputPlayer1.value = "";
       inputPlayer2.value = "";
@@ -318,7 +328,28 @@ window.addEventListener("pywebviewready", () => {
   // Event Listeners (JS ke Python)
   // ==================================================================
 
-  // Halaman Home
+  // Halaman Main Menu
+  if (btnMainMenuStart) {
+    btnMainMenuStart.addEventListener("click", () => {
+      window.showPage("home-page"); // Pindah ke halaman input nama
+    });
+  }
+
+  // BARU: Listener untuk tombol Exit
+  if (btnMainMenuExit) {
+    btnMainMenuExit.addEventListener("click", () => {
+      try {
+        // Panggil API Python untuk keluar
+        window.pywebview.api.exit_game();
+      } catch (e) {
+        console.error("Gagal memanggil exit_game():", e);
+        // Fallback jika API tidak ada (misalnya di browser)
+        window.close();
+      }
+    });
+  }
+
+  // Halaman Home (Input Nama)
   btnStartGame.addEventListener("click", () => {
     // 1. Ambil nilai dan hapus spasi di awal/akhir
     const name1 = inputPlayer1.value.trim();
@@ -335,6 +366,13 @@ window.addEventListener("pywebviewready", () => {
       window.pywebview.api.start_game(name1, name2);
     }
   });
+
+  // Tombol kembali ke Main Menu dari halaman input nama
+  if (btnBackToMainMenu) {
+    btnBackToMainMenu.addEventListener("click", () => {
+      window.showPage("main-menu-page");
+    });
+  }
 
   // Halaman Game
   canvas.addEventListener("click", (event) => {
@@ -386,11 +424,11 @@ window.addEventListener("pywebviewready", () => {
   });
 
   // ===== Event Listener Modal Credits =====
-  if (creditsLink) {
-    creditsLink.addEventListener("click", (e) => {
-      e.preventDefault(); // Mencegah link pindah halaman
+  if (btnMainMenuCredits) {
+    btnMainMenuCredits.addEventListener("click", (e) => {
+      e.preventDefault();
       if (creditsModal) {
-        creditsModal.style.display = "flex"; // Tampilkan modal
+        creditsModal.style.display = "flex";
       }
     });
   }
@@ -398,13 +436,12 @@ window.addEventListener("pywebviewready", () => {
   if (modalCloseBtn) {
     modalCloseBtn.addEventListener("click", () => {
       if (creditsModal) {
-        creditsModal.style.display = "none"; // Sembunyikan modal
+        creditsModal.style.display = "none";
       }
     });
   }
 
   if (creditsModal) {
-    // Klik di luar konten modal (di overlay) akan menutupnya
     creditsModal.addEventListener("click", (e) => {
       if (e.target === creditsModal) {
         creditsModal.style.display = "none";
@@ -413,11 +450,11 @@ window.addEventListener("pywebviewready", () => {
   }
 
   // ===== Event Listener Modal Settings =====
-  if (settingsBtn) {
-    settingsBtn.addEventListener("click", (e) => {
-      e.preventDefault(); // Mencegah link pindah halaman
+  if (btnMainMenuSettings) {
+    btnMainMenuSettings.addEventListener("click", (e) => {
+      e.preventDefault();
       if (settingsModal) {
-        settingsModal.style.display = "flex"; // Tampilkan modal
+        settingsModal.style.display = "flex";
       }
     });
   }
@@ -425,13 +462,12 @@ window.addEventListener("pywebviewready", () => {
   if (settingsModalClose) {
     settingsModalClose.addEventListener("click", () => {
       if (settingsModal) {
-        settingsModal.style.display = "none"; // Sembunyikan modal
+        settingsModal.style.display = "none";
       }
     });
   }
 
   if (settingsModal) {
-    // Klik di luar konten modal (di overlay) akan menutupnya
     settingsModal.addEventListener("click", (e) => {
       if (e.target === settingsModal) {
         settingsModal.style.display = "none";
@@ -441,16 +477,11 @@ window.addEventListener("pywebviewready", () => {
   // ========================================
 
   // ==================================
-  // PERBAIKAN: Logika Volume (v8 - Final)
+  // Logika Volume
   // ==================================
 
-  // Variabel penanda untuk mencegah event loop
   let isProgrammaticallyChanging = false;
 
-  /**
-   * Mengirim nilai volume HANYA ke backend Python.
-   * @param {number|string} volume Nilai dari 0.0 hingga 1.0
-   */
   function setPythonVolume(volume) {
     const numericVolume = parseFloat(volume);
     if (window.pywebview && window.pywebview.api) {
@@ -462,13 +493,9 @@ window.addEventListener("pywebviewready", () => {
     }
   }
 
-  /**
-   * Memuat pengaturan audio.
-   * (Aturan 1: Selalu Toggle On)
-   */
   function loadAudioSettings() {
     let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
-    const isMuted = false; // Aturan 1: Selalu ON
+    const isMuted = false;
 
     soundToggle.checked = true;
     volumeSlider.disabled = false;
@@ -483,10 +510,6 @@ window.addEventListener("pywebviewready", () => {
     localStorage.setItem("ticTacToeVolume", savedVolume);
   }
 
-  /**
-   * Dipanggil HANYA saat SLIDER digerakkan oleh PENGGUNA.
-   * (Aturan 4: Slider ke 0 -> Toggle ikut Off)
-   */
   function handleSliderInput(event) {
     if (isProgrammaticallyChanging) return;
 
@@ -495,24 +518,16 @@ window.addEventListener("pywebviewready", () => {
     setPythonVolume(intendedVolume);
 
     if (parseFloat(intendedVolume) === 0 && soundToggle.checked) {
-      // Aturan 4
       isProgrammaticallyChanging = true;
       soundToggle.checked = false;
-      // 'change' event akan memicu handleToggleChange
       isProgrammaticallyChanging = false;
     } else if (parseFloat(intendedVolume) > 0 && !soundToggle.checked) {
-      // Bonus: Jika slider digerakkan dari 0, hidupkan lagi toggle
       isProgrammaticallyChanging = true;
       soundToggle.checked = true;
-      // 'change' event akan memicu handleToggleChange
       isProgrammaticallyChanging = false;
     }
   }
 
-  /**
-   * Dipanggil HANYA saat TOGGLE diubah oleh PENGGUNA
-   * ATAU oleh handleSliderInput.
-   */
   function handleToggleChange(event) {
     if (isProgrammaticallyChanging) return;
 
@@ -520,15 +535,12 @@ window.addEventListener("pywebviewready", () => {
     localStorage.setItem("ticTacToeMuted", isMuted);
 
     if (isMuted) {
-      // Aturan 2: Toggle Off -> Slider disabled
       volumeSlider.disabled = true;
       setPythonVolume(0);
     } else {
-      // Aturan 3: Toggle On -> Slider enabled
       volumeSlider.disabled = false;
       let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
 
-      // Aturan 3: ...dan volume kembali (ke 1.0 jika sebelumnya 0)
       if (parseFloat(savedVolume) === 0) {
         savedVolume = 1.0;
         localStorage.setItem("ticTacToeVolume", savedVolume);
@@ -542,7 +554,6 @@ window.addEventListener("pywebviewready", () => {
     }
   }
 
-  // Tambahkan listener baru yang terpisah
   volumeSlider.addEventListener("input", handleSliderInput);
   soundToggle.addEventListener("change", handleToggleChange);
   // ========================================
@@ -551,8 +562,7 @@ window.addEventListener("pywebviewready", () => {
   // Inisialisasi Awal
   // ==================================================================
 
-  loadAudioSettings(); // Panggil fungsi untuk memuat setelan audio
-
-  drawGrid(); // Gambar grid saat script dimuat
-  window.showPage("home-page"); // Tampilkan halaman home
+  loadAudioSettings();
+  drawGrid();
+  window.showPage("main-menu-page");
 });

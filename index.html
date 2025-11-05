@@ -12,36 +12,53 @@
   </head>
   <body>
     <div class="background"></div>
+    <div class="background-overlay"></div>
 
-    <div class="top-left-controls">
-      <a id="credits-link" class="credits-link">
-        Credits <i class="fas fa-info-circle"></i>
-      </a>
-      <a id="settings-btn" class="settings-btn-link">
-        Settings <i class="fas fa-cog"></i>
-      </a>
+    <div id="main-menu-page" class="page-container active">
+      <h1 class="main-title large">Tic Tac Toe</h1>
+      <div class="content-frame">
+        <button id="main-menu-start-btn" class="btn btn-secondary">
+          Start Game
+        </button>
+        <button id="main-menu-settings-btn" class="btn btn-secondary">
+          Settings
+        </button>
+        <button id="main-menu-credits-btn" class="btn btn-secondary">
+          Credits
+        </button>
+        <button id="main-menu-exit-btn" class="btn btn-secondary">Exit</button>
+      </div>
     </div>
 
-    <div id="home-page" class="page-container active">
+    <div id="home-page" class="page-container">
+      <h1 class="main-title large">Start Game</h1>
       <div class="content-frame">
-        <h1>Tic Tac Toe</h1>
-        <p>Masukkan nama pemain</p>
-
         <div class="form-inputs">
           <div class="input-group">
-            <label for="player1">Player 1 sebagai X:</label>
-            <input type="text" id="player1" placeholder="Nama Player 1" />
+            <p class="player-label">Player 1 Name</p>
+            <input
+              type="text"
+              id="player1"
+              placeholder="Masukkan Nama Player 1"
+            />
           </div>
           <div class="input-group">
-            <label for="player2">Player 2 sebagai O:</label>
-            <input type="text" id="player2" placeholder="Nama Player 2" />
+            <p class="player-label">Player 2 Name</p>
+            <input
+              type="text"
+              id="player2"
+              placeholder="Masukkan Nama Player 2"
+            />
           </div>
         </div>
 
         <button id="start-game-btn" class="btn btn-primary">
-          Mulai Permainan 🎮
+          Start Game 🎮
         </button>
         <p id="home-error" class="error-message"></p>
+        <button id="back-to-main-menu-btn" class="btn btn-secondary">
+          Kembali ke Main Menu 🏠
+        </button>
       </div>
     </div>
 
@@ -76,17 +93,14 @@
       <div class="modal-content">
         <span class="modal-close-btn" id="settings-modal-close">&times;</span>
         <h1>Settings</h1>
-
         <div class="settings-container">
           <div class="setting-item">
             <label for="sound-toggle">Suara</label>
             <div class="toggle-switch">
               <input type="checkbox" id="sound-toggle" checked />
-
               <label class="slider round" for="sound-toggle"></label>
             </div>
           </div>
-
           <div class="setting-item">
             <label>Volume</label>
             <div class="volume-control-container">
