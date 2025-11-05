@@ -81,9 +81,21 @@ class Api:
             # Abaikan jika nilai yang dikirim dari JS tidak valid
             pass
 
+    # --- TAMBAHAN BARU UNTUK TOMBOL EXIT ---
+    def exit_game(self):
+        """Dipanggil dari JavaScript (tombol 'Exit') untuk menutup aplikasi."""
+        # print("Menerima perintah keluar dari JavaScript...")
+        if self.window:
+            # Hancurkan jendela. Ini akan menutup aplikasi
+            # dan memicu event 'closed' di main.py, 
+            # yang kemudian akan memanggil self.shutdown()
+            self.window.destroy()
+    # ----------------------------------------
+
     # Tambahkan fungsi shutdown
     def shutdown(self):
         """Dipanggil dari main.py saat window ditutup."""
+        # print("Menjalankan shutdown pygame...")
         # Hentikan semua modul pygame
         pygame.mixer.quit()
         pygame.quit()

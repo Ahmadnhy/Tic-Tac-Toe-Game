@@ -3,7 +3,7 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: transparent; /* 🔹 ganti dari abu2 jadi transparan */
+  background-color: transparent;
   color: #f0f0f0;
   margin: 0;
   padding: 0;
@@ -11,10 +11,10 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  overflow: hidden; /* Mencegah body scroll */
+  overflow: hidden;
 }
 
-/* 🔹 Pastikan html & body penuh layar */
+/* Pastikan html & body penuh layar */
 html,
 body {
   height: 100%;
@@ -31,38 +31,44 @@ body {
   background-repeat: repeat;
   background-size: auto;
   background-position: center;
-  z-index: -1; /* Di belakang semua konten */
+  z-index: -2;
   opacity: 1;
+}
+
+/* Lapisan overlay gelap */
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.507); /* Gelap 30% */
+  z-index: -1;
 }
 
 /* Kontainer Halaman */
 .page-container {
   width: 100%;
   height: 100%;
-  display: none; /* Sembunyikan semua halaman secara default */
+  display: none;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 20px;
-  box-sizing: border-box; /* Pastikan padding tidak menambah ukuran */
-  /* Tambahkan ini agar link credit bisa diposisikan */
+  box-sizing: border-box;
   position: relative;
 }
 
 .page-container.active {
-  display: flex; /* Tampilkan halaman yang aktif */
+  display: flex;
 }
 
+/* Frame blur dihapus */
 .content-frame {
   width: 100%;
-  max-width: 400px; /* Lebar maksimum untuk konten */
-  background: rgba(255, 255, 255, 0.1); /* 🔹 Efek kaca transparan */
-  backdrop-filter: blur(8px); /* 🔹 Efek blur untuk kaca */
-  -webkit-backdrop-filter: blur(8px); /* 🔹 Dukungan untuk Safari */
-  border: 1px solid rgba(255, 255, 255, 0.05); /* 🔹 Border tipis untuk kaca */
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* 🔹 Shadow lebih lembut */
+  max-width: 400px;
+  /* margin-top: 20px; <-- DIHAPUS untuk keseimbangan yang lebih baik */
 }
 
 /* Judul dan Teks */
@@ -72,6 +78,24 @@ h1 {
   color: #ffffff;
   margin-bottom: 10px;
 }
+
+/* Style untuk judul utama yang miring (default) */
+.main-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 25px;
+  transform: rotate(-7deg);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Judul lebih besar lagi */
+.main-title.large {
+  font-size: 90px;
+  margin-bottom: 35px;
+}
+
 h2 {
   font-size: 16px;
   font-weight: 600;
@@ -83,24 +107,29 @@ p {
   margin-bottom: 15px;
 }
 
-/* Form dan Input (Halaman Home) */
+/* Form dan Input (Halaman Home/Player Name) */
 .form-inputs {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 25px;
 }
+
 .input-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Label rata kiri */
+  align-items: center;
   width: 100%;
 }
-.input-group label {
-  font-size: 12px;
+
+.player-label {
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+  text-align: center;
+  width: 100%;
 }
+
 .input-group input[type="text"] {
   font-family: "Poppins", sans-serif;
   font-size: 14px;
@@ -108,8 +137,9 @@ p {
   padding: 10px;
   border: 2px solid #ccc;
   border-radius: 8px;
-  box-sizing: border-box; /* Padding tidak menambah lebar */
+  box-sizing: border-box;
   transition: border-color 0.2s;
+  text-align: center;
 }
 .input-group input[type="text"]:focus {
   border-color: #4da8da;
@@ -126,13 +156,13 @@ p {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
-  width: 100%; /* Tombol lebar penuh */
-  max-width: 300px; /* Lebar maksimum tombol */
+  width: 100%;
+  max-width: 300px;
   box-sizing: border-box;
   margin-top: 10px;
 }
 .btn:active {
-  transform: scale(0.98); /* Efek klik */
+  transform: scale(0.98);
 }
 
 .btn-primary {
@@ -143,12 +173,13 @@ p {
   background-color: #3a98c8;
 }
 
+/* Tombol sekunder (Tombol Home) menjadi PUTIH */
 .btn-secondary {
-  background-color: #cccccc;
+  background-color: #ffffff;
   color: #333;
 }
 .btn-secondary:hover {
-  background-color: #b8b8b8;
+  background-color: #e0e0e0;
 }
 
 /* Papan Canvas (Halaman Game) */
@@ -166,86 +197,22 @@ p {
   width: 300px;
   height: 300px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  margin-bottom: 20px;
 }
 
 /* Pesan Error (Halaman Home) */
 .error-message {
-  color: #e63946; /* Merah */
+  color: #e63946;
   font-size: 12px;
   font-weight: 600;
-  height: 15px; /* Beri ruang agar layout tidak lompat */
+  height: 15px;
   margin-top: 15px;
-}
-
-/* ================================== */
-/* Tombol Kiri Atas */
-/* ================================== */
-
-.top-left-controls {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-  display: flex;
-  gap: 10px; /* Jarak antara tombol Credits dan Settings */
-}
-
-.credits-link {
-  /* Hapus position, top, left, z-index */
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-  text-decoration: none;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 8px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  /* Tambahan baru untuk icon */
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.credits-link:hover {
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.settings-btn-link {
-  /* Hapus position, top, left, z-index */
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  padding: 8px 15px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  transition: background-color 0.2s;
-  gap: 8px; /* Jarak antara ikon dan teks */
-}
-
-.settings-btn-link:hover {
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.4);
 }
 
 /* ================================== */
 /* ===== STYLING MODAL (Credits & Settings) ===== */
 /* ================================== */
 
+/* Tampilan modal sengaja dipertahankan agar tetap memiliki frame blur */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -255,20 +222,18 @@ p {
   background: rgba(24, 24, 24, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  display: none; /* Sembunyikan default */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 100;
 }
 
 .modal-content {
-  /* Gunakan style yang sama dengan content-frame */
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-
   color: #f0f0f0;
   padding: 20px;
   border-radius: 12px;
@@ -299,10 +264,10 @@ p {
 
 .team-container {
   display: flex;
-  justify-content: center; /* Pusatkan tim */
+  justify-content: center;
   align-items: flex-start;
-  flex-wrap: wrap; /* Bungkus jika layar kecil */
-  gap: 35px; /* Jarak antar anggota tim */
+  flex-wrap: wrap;
+  gap: 35px;
   margin-top: 20px;
 }
 
@@ -310,7 +275,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100px; /* Lebar setiap profil */
+  width: 100px;
 }
 
 .team-photo {
@@ -326,7 +291,7 @@ p {
   font-size: 14px;
   font-weight: 600;
   margin-top: 10px;
-  margin-bottom: 5px; /* Kurangi margin bottom */
+  margin-bottom: 5px;
 }
 
 .social-links {
@@ -338,12 +303,12 @@ p {
 .social-links a svg {
   width: 20px;
   height: 20px;
-  stroke: #f0f0f0; /* Warna ikon */
+  stroke: #f0f0f0;
   transition: stroke 0.2s;
 }
 
 .social-links a:hover svg {
-  stroke: #4da8da; /* Warna ikon saat hover */
+  stroke: #4da8da;
 }
 
 /* ================================== */
@@ -351,8 +316,8 @@ p {
 /* ================================== */
 
 #settings-modal .modal-content {
-  max-width: 400px; /* Lebar modal settings */
-  text-align: left; /* Konten settings rata kiri */
+  max-width: 400px;
+  text-align: left;
 }
 
 /* Judul modal settings di tengah */
@@ -364,14 +329,14 @@ p {
 .settings-container {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Jarak antar item setting */
-  margin-top: 30px; /* Jarak dari judul modal */
+  gap: 25px;
+  margin-top: 30px;
   padding: 0 10px;
 }
 
 .setting-item {
   display: flex;
-  justify-content: space-between; /* Label di kiri, kontrol di kanan */
+  justify-content: space-between;
   align-items: center;
   width: 100%;
 }
@@ -387,13 +352,13 @@ p {
 .volume-control-container {
   display: flex;
   align-items: center;
-  gap: 10px; /* Jarak antara ikon dan slider */
+  gap: 10px;
 }
 
 .volume-control-container .volume-icon {
   font-size: 1.2rem;
   color: #e0e0e0;
-  margin: 0; /* Hapus margin default jika ada */
+  margin: 0;
 }
 
 /* ================================== */
@@ -411,15 +376,15 @@ p {
 
 /* 2. Enabled State (Putih) - Webkit (Chrome, Safari, Edge) */
 #volume-slider::-webkit-slider-runnable-track {
-  background-color: #ddd; /* Trek abu-abu sangat muda (putih) */
+  background-color: #ddd;
   border-radius: 5px;
   height: 8px;
 }
 #volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  margin-top: -4px; /* Pusatkan thumb ke trek */
-  background-color: #fdfdfd; /* Thumb putih */
+  margin-top: -4px;
+  background-color: #fdfdfd;
   border-radius: 50%;
   height: 16px;
   width: 16px;
@@ -442,11 +407,11 @@ p {
 
 /* 4. Disabled State (Abu-abu Gelap) - Webkit */
 #volume-slider:disabled::-webkit-slider-runnable-track {
-  background-color: #444; /* Trek abu-abu gelap */
+  background-color: #444;
   cursor: not-allowed;
 }
 #volume-slider:disabled::-webkit-slider-thumb {
-  background-color: #777; /* Thumb abu-abu gelap */
+  background-color: #777;
   border-color: #555;
   cursor: not-allowed;
 }
