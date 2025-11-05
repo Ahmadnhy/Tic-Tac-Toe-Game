@@ -15,14 +15,13 @@ window.addEventListener("pywebviewready", () => {
   const BOARD_SIZE = CELL_SIZE * 3 + LINE_WIDTH * 2; // 308 // Sesuaikan ukuran canvas jika berbeda (meski sudah diatur di HTML)
 
   canvas.width = BOARD_SIZE;
-  canvas.height = BOARD_SIZE; // Warna (DIUBAH AGAR SESUAI GAMBAR)
+  canvas.height = BOARD_SIZE; // ================================================== // PERUBAHAN WARNA SESUAI PERMINTAAN ANDA // ==================================================
 
-  const COLOR_GRID = "#4A4A4A"; // Kotak abu-abu gelap
-  const COLOR_X = "#FFFFFF"; // X Putih
-  const COLOR_O = "#FFFFFF"; // O Putih
-  const COLOR_WIN_LINE = "rgba(255, 255, 255, 0.5)"; // Garis putih transparan // Variabel state JS
-
-  let playerNames = { X: "Player 1", O: "Player 2" }; // Default // BARU: Variabel untuk melacak skor di sisi JavaScript
+  const COLOR_GRID = "#FFFFFF"; // PUTIH (untuk 9 kotak)
+  const COLOR_X = "#E63946"; // MERAH
+  const COLOR_O = "#007BFF"; // BIRU
+  const COLOR_WIN_LINE = "rgba(0, 0, 0, 0.4)"; // Garis hitam transparan // ================================================== // Variabel state JS
+  let playerNames = { X: "Player 1", O: "Player 2" }; // Default // Variabel untuk melacak skor di sisi JavaScript
 
   let player1Score = 0;
   let player2Score = 0; // ================================================================== // Referensi Elemen DOM // ================================================================== // Halaman
@@ -43,7 +42,7 @@ window.addEventListener("pywebviewready", () => {
   const inputPlayer1 = document.getElementById("player1");
   const inputPlayer2 = document.getElementById("player2");
   const homeError = document.getElementById("home-error");
-  const btnBackToMainMenu = document.getElementById("back-to-main-menu-btn"); // Halaman Game // BARU: Referensi elemen skor
+  const btnBackToMainMenu = document.getElementById("back-to-main-menu-btn"); // Halaman Game // Referensi elemen skor
 
   const player1ScoreEl = document.getElementById("player1-score");
   const player2ScoreEl = document.getElementById("player2-score");
@@ -53,7 +52,7 @@ window.addEventListener("pywebviewready", () => {
   const btnBackToHome = document.getElementById("back-to-home-btn");
   const btnGameSettings = document.getElementById("game-settings-btn");
   const btnFinishGame = document.getElementById("finish-game-btn");
-  const btnNewGame = document.getElementById("new-game-btn"); // Catatan: btnNewGame tidak ada di HTML Anda, tapi ada di JS. // Halaman Selesai
+  const btnNewGame = document.getElementById("new-game-btn"); // Halaman Selesai
 
   const labelTitle = document.getElementById("label-title");
   const labelSubtitle = document.getElementById("label-subtitle");
@@ -103,7 +102,7 @@ window.addEventListener("pywebviewready", () => {
       const name = player === "X" ? "Player 1" : "Player 2";
       labelStatus.textContent = `Giliran: ${name} (${player})`;
     }
-  }; // ========================================================== // FUNGSI MENGGAMBAR KANVAS (Tidak Berubah) // ==========================================================
+  }; // ========================================================== // FUNGSI MENGGAMBAR KANVAS (Warna X dan O diambil dari konstanta baru) // ==========================================================
 
   window.drawMove = (index, player) => {
     const row = Math.floor(index / 3);
@@ -115,7 +114,7 @@ window.addEventListener("pywebviewready", () => {
     ctx.lineCap = "round";
 
     if (player === "X") {
-      ctx.strokeStyle = COLOR_X;
+      ctx.strokeStyle = COLOR_X; // Warna Merah
       ctx.beginPath();
       ctx.moveTo(x - margin, y - margin);
       ctx.lineTo(x + margin, y + margin);
@@ -123,7 +122,7 @@ window.addEventListener("pywebviewready", () => {
       ctx.lineTo(x - margin, y + margin);
       ctx.stroke();
     } else if (player === "O") {
-      ctx.strokeStyle = COLOR_O;
+      ctx.strokeStyle = COLOR_O; // Warna Biru
       ctx.beginPath();
       ctx.arc(x, y, margin, 0, 2 * Math.PI);
       ctx.stroke();
@@ -132,7 +131,7 @@ window.addEventListener("pywebviewready", () => {
 
   const drawGrid = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = COLOR_GRID;
+    ctx.fillStyle = COLOR_GRID; // Warna Putih
     const cornerRadius = 15;
 
     for (let row = 0; row < 3; row++) {
@@ -197,7 +196,7 @@ window.addEventListener("pywebviewready", () => {
         (y1 = canvas.height - padding);
     }
 
-    ctx.strokeStyle = COLOR_WIN_LINE;
+    ctx.strokeStyle = COLOR_WIN_LINE; // Garis Hitam Transparan
     ctx.lineWidth = 7;
     ctx.lineCap = "round";
     let progress = 0;
@@ -221,7 +220,7 @@ window.addEventListener("pywebviewready", () => {
     ctx.lineTo(x0, y0);
     ctx.stroke();
     animate();
-  }; // ========================================================== // FUNGSI LOGIKA GAME (INI YANG DIMODIFIKASI) // ==========================================================
+  }; // ========================================================== // FUNGSI LOGIKA GAME (Sistem Skor) // ==========================================================
   /**
    * MODIFIKASI: Menangani logika UI saat menang ronde.
    * Tidak pindah halaman, tapi tambah skor dan reset papan.
