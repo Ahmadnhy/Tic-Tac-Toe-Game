@@ -5,12 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Tac Toe - 404</title>
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
   </head>
   <body>
     <div class="background"></div>
 
+    <div class="top-left-controls">
+      <a id="credits-link" class="credits-link">
+        Credits <i class="fas fa-info-circle"></i>
+      </a>
+      <a id="settings-btn" class="settings-btn-link">
+        Settings <i class="fas fa-cog"></i>
+      </a>
+    </div>
+
     <div id="home-page" class="page-container active">
-      <a id="credits-link" class="credits-link">Credits</a>
       <div class="content-frame">
         <h1>Tic Tac Toe</h1>
         <p>Masukkan nama pemain</p>
@@ -60,13 +72,40 @@
       </div>
     </div>
 
-    <!-- Menambahkan setting volume -->
-    <div class="settings-container">
-      <i class="fas fa-volume-up volume-icon"></i>
-      <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1.0">
+    <div id="settings-modal" class="modal-overlay">
+      <div class="modal-content">
+        <span class="modal-close-btn" id="settings-modal-close">&times;</span>
+        <h1>Settings</h1>
+
+        <div class="settings-container">
+          <div class="setting-item">
+            <label for="sound-toggle">Suara</label>
+            <div class="toggle-switch">
+              <input type="checkbox" id="sound-toggle" checked />
+
+              <label class="slider round" for="sound-toggle"></label>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label>Volume</label>
+            <div class="volume-control-container">
+              <i class="fas fa-volume-down volume-icon"></i>
+              <input
+                type="range"
+                id="volume-slider"
+                min="0"
+                max="1"
+                step="0.1"
+                value="1.0"
+              />
+              <i class="fas fa-volume-up volume-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Credit -->
     <div id="credits-modal" class="modal-overlay">
       <div class="modal-content">
         <span class="modal-close-btn" id="modal-close">&times;</span>
@@ -155,7 +194,11 @@
           </div>
 
           <div class="team-member">
-            <img src="assets/images/pp pixel.jpg" alt="Foto Tim 1" class="team-photo" />
+            <img
+              src="assets/images/pp pixel.jpg"
+              alt="Foto Tim 1"
+              class="team-photo"
+            />
             <p class="team-name" style="margin-bottom: 15px">Farozi</p>
             <div class="social-links">
               <a

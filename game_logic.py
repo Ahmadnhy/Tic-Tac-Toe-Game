@@ -64,6 +64,23 @@ class Api:
         name2 = self.player2_name if self.player2_name else "Player 2"
         return {"X": name1, "O": name2}
 
+    def set_volume(self, volume):
+        """Dipanggil oleh JS untuk mengatur volume semua suara."""
+        try:
+            # Pastikan volume adalah float antara 0.0 dan 1.0
+            vol = float(volume)
+            if 0.0 <= vol <= 1.0:
+                # Atur volume untuk setiap suara yang ada
+                if hasattr(self, 'sound_click'):
+                    self.sound_click.set_volume(vol)
+                if hasattr(self, 'sound_win'):
+                    self.sound_win.set_volume(vol)
+                if hasattr(self, 'sound_draw'):
+                    self.sound_draw.set_volume(vol)
+        except (ValueError, TypeError):
+            # Abaikan jika nilai yang dikirim dari JS tidak valid
+            pass
+
     # Tambahkan fungsi shutdown
     def shutdown(self):
         """Dipanggil dari main.py saat window ditutup."""

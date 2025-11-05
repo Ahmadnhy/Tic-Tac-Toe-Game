@@ -63,6 +63,16 @@ window.addEventListener("pywebviewready", () => {
   const modalCloseBtn = document.getElementById("modal-close");
   // ====================================
 
+  // ===== Referensi Modal Settings =====
+  const settingsBtn = document.getElementById("settings-btn");
+  const settingsModal = document.getElementById("settings-modal");
+  const settingsModalClose = document.getElementById("settings-modal-close");
+  const soundToggle = document.getElementById("sound-toggle");
+
+  // PERUBAHAN: Referensi slider dinyalakan kembali
+  const volumeSlider = document.getElementById("volume-slider");
+  // ====================================
+
   // ==================================================================
   // Fungsi Helper (Dipanggil oleh Python atau Event Listener)
   // ==================================================================
@@ -310,8 +320,6 @@ window.addEventListener("pywebviewready", () => {
 
   // Halaman Home
   btnStartGame.addEventListener("click", () => {
-    // --- PERBAIKAN DIMULAI DI SINI ---
-
     // 1. Ambil nilai dan hapus spasi di awal/akhir
     const name1 = inputPlayer1.value.trim();
     const name2 = inputPlayer2.value.trim();
@@ -326,7 +334,6 @@ window.addEventListener("pywebviewready", () => {
       // 3. Baru panggil API Python jika nama sudah valid
       window.pywebview.api.start_game(name1, name2);
     }
-    // --- PERBAIKAN SELESAI ---
   });
 
   // Halaman Game
@@ -389,7 +396,7 @@ window.addEventListener("pywebviewready", () => {
   }
 
   if (modalCloseBtn) {
-    modalCloseBtn.addEventListener("click", () => { // PERBAIKAN: () => {
+    modalCloseBtn.addEventListener("click", () => {
       if (creditsModal) {
         creditsModal.style.display = "none"; // Sembunyikan modal
       }
@@ -405,41 +412,147 @@ window.addEventListener("pywebviewready", () => {
     });
   }
 
-  // pengaturan volume
-  document.addEventListener('DOMContentLoaded', () => {
-  const volumeSlider = document.getElementById('volume-slider');
-
-  const savedVolume = localStorage.getItem('ticTacToeVolume') || 1.0;
-
-  volumeSlider.value = savedVolume;
-  setVolume(savedVolume);
-
-  volumeSlider.addEventListener('input', (event) => {
-    const newVolume = event.target.value;
-
-    // atur volume
-    setVolume(newVolume);
-
-    // simpan preferensi volume pengguna
-    localStorage.setItem('ticTacToeVolume', newVolume);
-  });
-
-  function setVolume(volume) {
-    // Dapatkan semua elemen audio dengan class 'sound'
-    const sounds = document.querySelectorAll('audio.sound');
-
-    // Loop melalui setiap elemen audio dan set volume
-    sounds.forEach(sound => {
-      sound.volume = volume;
+  // ===== Event Listener Modal Settings =====
+  if (settingsBtn) {
+    settingsBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // Mencegah link pindah halaman
+      if (settingsModal) {
+        settingsModal.style.display = "flex"; // Tampilkan modal
+      }
     });
   }
-});
+
+  if (settingsModalClose) {
+    settingsModalClose.addEventListener("click", () => {
+      if (settingsModal) {
+        settingsModal.style.display = "none"; // Sembunyikan modal
+      }
+    });
+  }
+
+  if (settingsModal) {
+    // Klik di luar konten modal (di overlay) akan menutupnya
+    settingsModal.addEventListener("click", (e) => {
+      if (e.target === settingsModal) {
+        settingsModal.style.display = "none";
+      }
+    });
+  }
+  // ========================================
+
+  // ==================================
+  // PERBAIKAN: Logika Volume (v8 - Final)
+  // ==================================
+
+  // Variabel penanda untuk mencegah event loop
+  let isProgrammaticallyChanging = false;
+
+  /**
+   * Mengirim nilai volume HANYA ke backend Python.
+   * @param {number|string} volume Nilai dari 0.0 hingga 1.0
+   */
+  function setPythonVolume(volume) {
+    const numericVolume = parseFloat(volume);
+    if (window.pywebview && window.pywebview.api) {
+      try {
+        window.pywebview.api.set_volume(numericVolume);
+      } catch (e) {
+        console.error("Gagal mengatur volume di Python:", e);
+      }
+    }
+  }
+
+  /**
+   * Memuat pengaturan audio.
+   * (Aturan 1: Selalu Toggle On)
+   */
+  function loadAudioSettings() {
+    let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
+    const isMuted = false; // Aturan 1: Selalu ON
+
+    soundToggle.checked = true;
+    volumeSlider.disabled = false;
+
+    if (parseFloat(savedVolume) === 0) {
+      savedVolume = 1.0;
+    }
+    volumeSlider.value = savedVolume;
+    setPythonVolume(savedVolume);
+
+    localStorage.setItem("ticTacToeMuted", isMuted);
+    localStorage.setItem("ticTacToeVolume", savedVolume);
+  }
+
+  /**
+   * Dipanggil HANYA saat SLIDER digerakkan oleh PENGGUNA.
+   * (Aturan 4: Slider ke 0 -> Toggle ikut Off)
+   */
+  function handleSliderInput(event) {
+    if (isProgrammaticallyChanging) return;
+
+    const intendedVolume = event.target.value;
+    localStorage.setItem("ticTacToeVolume", intendedVolume);
+    setPythonVolume(intendedVolume);
+
+    if (parseFloat(intendedVolume) === 0 && soundToggle.checked) {
+      // Aturan 4
+      isProgrammaticallyChanging = true;
+      soundToggle.checked = false;
+      // 'change' event akan memicu handleToggleChange
+      isProgrammaticallyChanging = false;
+    } else if (parseFloat(intendedVolume) > 0 && !soundToggle.checked) {
+      // Bonus: Jika slider digerakkan dari 0, hidupkan lagi toggle
+      isProgrammaticallyChanging = true;
+      soundToggle.checked = true;
+      // 'change' event akan memicu handleToggleChange
+      isProgrammaticallyChanging = false;
+    }
+  }
+
+  /**
+   * Dipanggil HANYA saat TOGGLE diubah oleh PENGGUNA
+   * ATAU oleh handleSliderInput.
+   */
+  function handleToggleChange(event) {
+    if (isProgrammaticallyChanging) return;
+
+    const isMuted = !soundToggle.checked;
+    localStorage.setItem("ticTacToeMuted", isMuted);
+
+    if (isMuted) {
+      // Aturan 2: Toggle Off -> Slider disabled
+      volumeSlider.disabled = true;
+      setPythonVolume(0);
+    } else {
+      // Aturan 3: Toggle On -> Slider enabled
+      volumeSlider.disabled = false;
+      let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
+
+      // Aturan 3: ...dan volume kembali (ke 1.0 jika sebelumnya 0)
+      if (parseFloat(savedVolume) === 0) {
+        savedVolume = 1.0;
+        localStorage.setItem("ticTacToeVolume", savedVolume);
+      }
+
+      isProgrammaticallyChanging = true;
+      volumeSlider.value = savedVolume;
+      isProgrammaticallyChanging = false;
+
+      setPythonVolume(savedVolume);
+    }
+  }
+
+  // Tambahkan listener baru yang terpisah
+  volumeSlider.addEventListener("input", handleSliderInput);
+  soundToggle.addEventListener("change", handleToggleChange);
   // ========================================
 
   // ==================================================================
   // Inisialisasi Awal
   // ==================================================================
+
+  loadAudioSettings(); // Panggil fungsi untuk memuat setelan audio
+
   drawGrid(); // Gambar grid saat script dimuat
   window.showPage("home-page"); // Tampilkan halaman home
 });
-
