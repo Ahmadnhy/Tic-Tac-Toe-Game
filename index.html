@@ -103,20 +103,27 @@
         </div>
       </div>
     </div>
-    <div id="end-page" class="page-container">
+    
+    <div id="end-page" class="page-container winner-page">
       <div class="content-frame">
-        <h1 id="label-title">WINNER</h1>
-        <p id="label-subtitle">Nama Player (X)</p>
+        <div class="trophy-icon-container">
+          <i class="fas fa-trophy winner-trophy"></i>
+        </div>
 
-        <button id="play-again-btn" class="btn btn-primary">
+        <h1 id="label-title" class="winner-title">CONGRATULATIONS!</h1>
+        <p id="label-subtitle" class="winner-subtitle">
+          Pemenangnya Adalah: <span id="winner-name-placeholder">Nama Player (X)</span>
+        </p>
+
+        <button id="play-again-btn" class="btn btn-primary btn-shine">
           Main Lagi 🔄
         </button>
         <button id="back-to-home-btn-2" class="btn btn-secondary">
           Kembali ke Home 🏠
         </button>
       </div>
+      <div class="confetti-effect"></div>
     </div>
-
     <div id="settings-modal" class="modal-overlay">
       <div class="modal-content">
         <span class="modal-close-btn" id="settings-modal-close">&times;</span>
@@ -391,7 +398,6 @@
                 </svg>
               </a>
 
-              <!-- GitHub -->
               <a
                 href="https://github.com/AzzahraZudhikta"
                 title="GitHub"
@@ -474,7 +480,6 @@
                 </svg>
               </a>
 
-              <!-- GitHub -->
               <a
                 href="https://github.com/dzaky-afk"
                 title="GitHub"
