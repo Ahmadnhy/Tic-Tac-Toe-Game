@@ -648,6 +648,52 @@ window.addEventListener("pywebviewready", () => {
     }
   }
 
+  // ==================================================================
+  // Tambahan: dukungan background bergambar (BG2, BG3, dst.)
+  // ==================================================================
+  const bgButtons = document.querySelectorAll(".bg-img-btn");
+  bgButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const bgEl = document.querySelector(".background");
+      const overlay = document.querySelector(".background-overlay");
+      const bgPath = btn.dataset.bg;
+      if (bgEl && bgPath) {
+        bgEl.style.backgroundImage = `url('${bgPath}')`;
+        bgEl.style.backgroundColor = "";
+        bgEl.style.backgroundSize = "cover";
+        if (overlay) overlay.style.display = "";
+        try {
+          localStorage.setItem("ticTacToeBg", "image");
+          localStorage.setItem("ticTacToeBgPath", bgPath);
+        } catch (e) {}
+      }
+    });
+  });
+
+  // Saat startup, cek apakah user sebelumnya pakai gambar custom
+  window.addEventListener("DOMContentLoaded", () => {
+    try {
+      const savedType = localStorage.getItem("ticTacToeBg");
+      const savedPath = localStorage.getItem("ticTacToeBgPath");
+      const bgEl = document.querySelector(".background");
+      const overlay = document.querySelector(".background-overlay");
+      if (bgEl && savedType) {
+        if (savedType === "image" && savedPath) {
+          bgEl.style.backgroundImage = `url('${savedPath}')`;
+          bgEl.style.backgroundColor = "";
+          bgEl.style.backgroundSize = "cover";
+          if (overlay) overlay.style.display = "";
+        } else if (savedType.startsWith("#")) {
+          bgEl.style.backgroundImage = "none";
+          bgEl.style.backgroundColor = savedType;
+          bgEl.style.backgroundSize = "cover";
+          if (overlay) overlay.style.display = "none";
+        }
+      }
+    } catch (e) {}
+  });
+
+
   // apply saved bg (if any)
   try {
     const savedBg = localStorage.getItem('ticTacToeBg');
