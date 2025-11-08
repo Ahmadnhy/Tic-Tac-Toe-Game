@@ -21,9 +21,6 @@ class GameController:
 
         # 1. Update state di Python
         self.board[index] = self.player
-        
-        # Panggil fungsi play_sound() dari Api (yang ada di game_logic.py)
-        self.api.play_sound('click')
 
         # 2. Kirim perintah gambar ke JS
         if self.api.window:

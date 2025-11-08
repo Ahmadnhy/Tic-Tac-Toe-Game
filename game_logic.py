@@ -63,7 +63,6 @@ class Api:
 
     def cell_clicked(self, index):
         """Dipanggil oleh JS saat sel di papan diklik."""
-        self.play_sound('click') # Mainkan suara klik di sini
         self.game_controller.cell_clicked(index) # Teruskan ke logika game
 
     def reset_board_from_js(self):
