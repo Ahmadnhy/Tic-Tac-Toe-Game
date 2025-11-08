@@ -38,22 +38,29 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  
+  /* Default: gambar utama */
   background-image: url("../images/background.jpg");
-  background-repeat: repeat;
-  background-size: auto;
+  background-repeat: no-repeat;
   background-position: center;
+  background-size: cover;
+
+  /* Transisi halus saat ganti tema/gambar */
+  transition: background-image 0.6s ease-in-out, background-color 0.4s ease-in-out;
+
   z-index: -2;
   opacity: 1;
 }
 
-/* Lapisan overlay gelap */
+/* Lapisan overlay gelap (agar teks tetap terbaca saat pakai gambar terang) */
 .background-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3); /* Gelap 30% */
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: background-color 0.4s ease-in-out;
   z-index: -1;
 }
 
@@ -61,7 +68,7 @@ body {
 .page-container {
   width: 100%;
   height: 100%;
-  display: none; /* Sembunyikan semua halaman secara default */
+  display: none; /* semua halaman disembunyikan default */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -802,4 +809,207 @@ p {
     .winner-subtitle {
         font-size: 18px;
     }
+}
+
+/* ===== STYLE HALAMAN SETTINGS (BACKGROUND THEME) ===== */
+
+/* Kotak pengaturan background */
+.setting-item label {
+  font-weight: 600;
+  color: #fff;
+  display: block;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+/* Area tombol dan color picker */
+.color-free {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Tombol umum di settings */
+#bg-apply-btn,
+#bg-reset-btn,
+.bg-img-btn {
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+}
+
+/* Tombol gambar (BG2, BG3, dsb) */
+.bg-img-btn {
+  background-color: #2b3a60;
+  color: #fff;
+  border: none;
+}
+.bg-img-btn:hover {
+  background-color: #425a89;
+  transform: scale(1.05);
+}
+
+/* Tombol warna & reset */
+#bg-apply-btn {
+  background-color: #2196f3;
+  color: #fff;
+  border: none;
+}
+#bg-apply-btn:hover {
+  background-color: #1976d2;
+  transform: scale(1.05);
+}
+#bg-reset-btn {
+  background-color: #9c27b0;
+  color: #fff;
+  border: none;
+}
+#bg-reset-btn:hover {
+  background-color: #7b1fa2;
+  transform: scale(1.05);
+}
+
+/* Input color picker */
+#bg-color-picker {
+  width: 50px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.25s ease;
+}
+#bg-color-picker:hover {
+  transform: scale(1.1);
+}
+
+/* ===== FIX: Tombol BG2 dan BG3 tidak muncul ===== */
+
+/* Pastikan setiap setting-item yang berisi tombol tampil dalam kolom (bukan baris) */
+#settings-modal .setting-item {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+/* Khusus bagian pilihan background */
+#settings-modal .setting-item .color-free {
+  width: 100%;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* Tambahkan margin biar rapi antar baris */
+#settings-modal .setting-item + .setting-item {
+  margin-top: 10px;
+}
+
+
+/* Buka batas tinggi modal agar semua konten kelihatan */
+#settings-modal .modal-content {
+  overflow-y: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* Pastikan container tidak menyembunyikan tombol */
+#settings-modal .settings-container {
+  overflow: visible !important;
+  flex-wrap: wrap !important;
+}
+
+/* Tombol BG2 & BG3 tampil jelas */
+.bg-img-btn {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  background: #2b3a60 !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  margin-top: 8px !important;
+}
+
+/* =================== HALAMAN SETTINGS =================== */
+#settings-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#settings-page .content-frame {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 30px 40px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  width: 350px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* Judul Settings */
+#settings-page h2 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* Label dan input */
+.settings-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  color: #f0f0f0;
+}
+
+.settings-item label {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.settings-item select,
+.settings-item input[type="range"],
+.settings-item input[type="checkbox"] {
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  padding: 8px;
+  font-size: 14px;
+  background-color: rgba(255,255,255,0.2);
+  color: white;
+  outline: none;
+}
+
+.settings-item select:hover,
+.settings-item input[type="range"]:hover,
+.settings-item input[type="checkbox"]:hover {
+  background-color: rgba(255,255,255,0.3);
+}
+
+/* Tombol kembali ke menu */
+#settings-page .btn-back {
+  margin-top: 20px;
+  background-color: #ffffff;
+  color: #333;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: all 0.2s;
+}
+
+#settings-page .btn-back:hover {
+  background-color: #e0e0e0;
 }
