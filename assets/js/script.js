@@ -655,6 +655,7 @@ window.addEventListener("pywebviewready", () => {
       typeof window.pywebview.api.set_volume === "function"
     ) {
       try {
+        // Kirim nilai antara 0.0 dan 1.0
         window.pywebview.api.set_volume(numericVolume);
       } catch (e) {
         console.error("Gagal mengatur volume di Python:", e);
@@ -663,13 +664,20 @@ window.addEventListener("pywebviewready", () => {
   }
 
   function loadAudioSettings() {
+    // Volume disimpan sebagai 0.0 - 1.0
     let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
     const isMuted = false;
     if (soundToggle) soundToggle.checked = true;
     if (volumeSlider) volumeSlider.disabled = false;
+
     if (parseFloat(savedVolume) === 0) savedVolume = 1.0;
-    if (volumeSlider) volumeSlider.value = savedVolume;
+
+    // PERBAIKAN: Set nilai slider (0-100)
+    if (volumeSlider) volumeSlider.value = parseFloat(savedVolume) * 100;
+
+    // Kirim nilai 0.0-1.0 ke Python
     setPythonVolume(savedVolume);
+
     try {
       localStorage.setItem("ticTacToeMuted", isMuted);
       localStorage.setItem("ticTacToeVolume", savedVolume);
@@ -678,24 +686,27 @@ window.addEventListener("pywebviewready", () => {
 
   function handleSliderInput(event) {
     if (isProgrammaticallyChanging) return;
+
+    // Nilai slider adalah 0-100
     const intendedVolume = event.target.value;
+
+    // PERBAIKAN: Normalisasi nilai ke 0.0-1.0
+    const normalizedVolume = parseFloat(intendedVolume) / 100;
+
     try {
-      localStorage.setItem("ticTacToeVolume", intendedVolume);
+      // Simpan nilai 0.0-1.0
+      localStorage.setItem("ticTacToeVolume", normalizedVolume);
     } catch (e) {}
-    setPythonVolume(intendedVolume);
-    if (
-      parseFloat(intendedVolume) === 0 &&
-      soundToggle &&
-      soundToggle.checked
-    ) {
+
+    // Kirim nilai 0.0-1.0 ke Python
+    setPythonVolume(normalizedVolume);
+
+    // PERBAIKAN: Cek terhadap nilai 0.0
+    if (normalizedVolume === 0 && soundToggle && soundToggle.checked) {
       isProgrammaticallyChanging = true;
       soundToggle.checked = false;
       isProgrammaticallyChanging = false;
-    } else if (
-      parseFloat(intendedVolume) > 0 &&
-      soundToggle &&
-      !soundToggle.checked
-    ) {
+    } else if (normalizedVolume > 0 && soundToggle && !soundToggle.checked) {
       isProgrammaticallyChanging = true;
       soundToggle.checked = true;
       isProgrammaticallyChanging = false;
@@ -708,11 +719,14 @@ window.addEventListener("pywebviewready", () => {
     try {
       localStorage.setItem("ticTacToeMuted", isMuted);
     } catch (e) {}
+
     if (isMuted) {
       if (volumeSlider) volumeSlider.disabled = true;
       setPythonVolume(0);
     } else {
       if (volumeSlider) volumeSlider.disabled = false;
+
+      // Ambil nilai 0.0-1.0
       let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
       if (parseFloat(savedVolume) === 0) {
         savedVolume = 1.0;
@@ -720,9 +734,13 @@ window.addEventListener("pywebviewready", () => {
           localStorage.setItem("ticTacToeVolume", savedVolume);
         } catch (e) {}
       }
+
       isProgrammaticallyChanging = true;
-      if (volumeSlider) volumeSlider.value = savedVolume;
+      // PERBAIKAN: Set nilai slider (0-100)
+      if (volumeSlider) volumeSlider.value = parseFloat(savedVolume) * 100;
       isProgrammaticallyChanging = false;
+
+      // Kirim nilai 0.0-1.0 ke Python
       setPythonVolume(savedVolume);
     }
   }
@@ -756,17 +774,16 @@ window.addEventListener("pywebviewready", () => {
   // Background color/image picker
   // ==================================================================
 
-  // PERUBAHAN: Mengganti default URL ke bg1.jpg
-  const BG_IMAGE_URL = "assets/images/bg1.jpg";
+  const BG_IMAGE_URL = "assets/images/bg1.jpg"; // Default path
 
   function applyBackgroundType(typeOrColor) {
     const bgEl = document.querySelector(".background");
     const overlay = document.querySelector(".background-overlay");
     if (!bgEl) return;
+
     if (!typeOrColor || typeOrColor === "image") {
-      // Fungsi ini sekarang hanya untuk reset ke warna,
-      // jadi kita tidak benar-benar butuh BG_IMAGE_URL lagi,
-      // tapi biarkan saja untuk konsistensi.
+      // Fungsi ini dipanggil oleh bgResetBtn (yang sudah dihapus)
+      // Jadi, ini adalah "reset" fallback
       bgEl.style.backgroundImage = `url('${BG_IMAGE_URL}')`; // Tetapkan ke BG1
       bgEl.style.backgroundColor = "";
       bgEl.style.backgroundSize = "auto";
