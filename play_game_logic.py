@@ -21,10 +21,11 @@ class GameController:
 
         # 1. Update state di Python
         self.board[index] = self.player
-        self.api.sound_click.play()
+        
+        # Panggil fungsi play_sound() dari Api (yang ada di game_logic.py)
+        self.api.play_sound('click')
 
         # 2. Kirim perintah gambar ke JS
-        # Tambahkan pemeriksaan 'if self.api.window'
         if self.api.window:
             self.api.window.evaluate_js(f'window.drawMove({index}, "{self.player}")')
 
@@ -34,23 +35,20 @@ class GameController:
 
         if win_pattern:
             self.game_in_progress = False
-            self.api.sound_win.play()
-            # Tambahkan pemeriksaan 'if self.api.window'
             if self.api.window:
                 # Kirim pattern sebagai array JS
+                # script.js (handleWin) akan memutar suara 'score'
                 self.api.window.evaluate_js(f'window.handleWin({win_pattern}, "{self.player}")')
         
         elif is_full:
             self.game_in_progress = False
-            self.api.sound_draw.play()
-            # Tambahkan pemeriksaan 'if self.api.window'
             if self.api.window:
+                # script.js (handleDraw) akan memutar suara 'draw'
                 self.api.window.evaluate_js('window.handleDraw()')
         
         else:
             # Ganti pemain
             self.player = "O" if self.player == "X" else "X"
-            # Tambahkan pemeriksaan 'if self.api.window'
             if self.api.window:
                 self.api.window.evaluate_js(f'window.updateTurnLabel("{self.player}")')
 
@@ -73,8 +71,11 @@ class GameController:
     def reset_board_from_js(self):
         """Dipanggil oleh JS (tombol 'Main Lagi' atau 'Reset')."""
         self.reset_board_internal()
-        # Tambahkan pemeriksaan 'if self.api.window'
         if self.api.window:
             self.api.window.evaluate_js('window.resetBoardUI()')
-            self.api.window.evaluate_js('window.showPage("game-page")')
+            
+            # PERBAIKAN: Baris di bawah ini DIHAPUS.
+            # JS akan menangani perpindahan halaman.
+            # self.api.window.evaluate_js('window.showPage("game-page")') 
+            
             self.api.window.evaluate_js(f'window.updateTurnLabel("X")')

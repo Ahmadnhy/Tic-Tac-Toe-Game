@@ -88,12 +88,33 @@ window.addEventListener("pywebviewready", () => {
   const soundToggle = document.getElementById("sound-toggle");
   const volumeSlider = document.getElementById("volume-slider");
 
+  // PERBAIKAN: Memuat suara klik di JavaScript
+  const soundClick = new Audio("assets/sounds/click.wav");
+
   // Color pickers (X/O) and background controls (may be null if HTML belum punya)
   const xColorPicker = document.getElementById("x-color-picker");
   const oColorPicker = document.getElementById("o-color-picker");
   const bgColorPicker = document.getElementById("bg-color-picker");
   const bgApplyBtn = document.getElementById("bg-apply-btn");
-  // const bgResetBtn = document.getElementById("bg-reset-btn"); // Dihapus
+
+  // ==================================================================
+  // Helper untuk memutar suara dari Python (win, draw, score)
+  // ==================================================================
+  function playPySound(soundName) {
+    if (
+      window.pywebview &&
+      window.pywebview.api &&
+      typeof window.pywebview.api.play_sound === "function"
+    ) {
+      try {
+        window.pywebview.api.play_sound(soundName);
+      } catch (e) {
+        console.error(`Gagal memutar suara: ${soundName}`, e);
+      }
+    } else {
+      console.log(`Fallback: Memainkan suara ${soundName}`);
+    }
+  }
 
   // ==================================================================
   // Helper: baca CSS vars bila kamu pakai :root vars
@@ -361,10 +382,13 @@ window.addEventListener("pywebviewready", () => {
   // ==================================================================
   window.handleWin = (pattern, player) => {
     drawWinnerLine(pattern);
+
     if (player === "X") {
+      playPySound("score"); // Panggil suara untuk P1
       player1Score++;
       if (player1ScoreEl) player1ScoreEl.textContent = player1Score;
     } else {
+      playPySound("score"); // Panggil suara untuk P2
       player2Score++;
       if (player2ScoreEl) player2ScoreEl.textContent = player2Score;
     }
@@ -388,6 +412,7 @@ window.addEventListener("pywebviewready", () => {
   };
 
   window.handleDraw = () => {
+    playPySound("draw");
     setTimeout(() => {
       if (
         window.pywebview &&
@@ -489,12 +514,23 @@ window.addEventListener("pywebviewready", () => {
       const xInCell = x % (CELL_SIZE + LINE_WIDTH);
       const yInCell = y % (CELL_SIZE + LINE_WIDTH);
       if (xInCell < CELL_SIZE && yInCell < CELL_SIZE) {
+        // PERBAIKAN: Mainkan suara klik instan di JS
+        if (soundClick) {
+          // Terapkan volume dari slider
+          const sliderVolume =
+            (volumeSlider.value / 100) * (soundToggle.checked ? 1 : 0);
+          soundClick.volume = sliderVolume;
+          soundClick.currentTime = 0; // Rewind
+          soundClick.play();
+        }
+
         const index = row * 3 + col;
         if (
           window.pywebview &&
           window.pywebview.api &&
           typeof window.pywebview.api.cell_clicked === "function"
         ) {
+          // Kirim perintah ke Python (tanpa menunggu suara)
           window.pywebview.api.cell_clicked(index);
         } else {
           console.log("cell clicked (fallback):", index);
@@ -543,14 +579,17 @@ window.addEventListener("pywebviewready", () => {
       const p2Name = playerNames.O || "Player 2";
 
       if (player1Score > player2Score) {
+        playPySound("win");
         if (labelTitle) labelTitle.textContent = "PEMENANG AKHIR";
         if (labelSubtitle)
           labelSubtitle.textContent = `${p1Name} (X) - Skor: ${player1Score}`;
       } else if (player2Score > player1Score) {
+        playPySound("win");
         if (labelTitle) labelTitle.textContent = "PEMENANG AKHIR";
         if (labelSubtitle)
           labelSubtitle.textContent = `${p2Name} (O) - Skor: ${player2Score}`;
       } else {
+        playPySound("draw");
         if (labelTitle) labelTitle.textContent = "PERMAINAN SERI";
         if (labelSubtitle)
           labelSubtitle.textContent = `Skor Akhir: ${p1Name} (${player1Score}) - ${p2Name} (${player2Score})`;
@@ -579,15 +618,18 @@ window.addEventListener("pywebviewready", () => {
       player2Score = 0;
       if (player1ScoreEl) player1ScoreEl.textContent = "0";
       if (player2ScoreEl) player2ScoreEl.textContent = "0";
+
       if (
         window.pywebview &&
         window.pywebview.api &&
         typeof window.pywebview.api.reset_board_from_js === "function"
       ) {
         window.pywebview.api.reset_board_from_js();
-      } else {
-        if (typeof window.resetBoardUI === "function") window.resetBoardUI();
-        if (typeof window.showPage === "function") window.showPage("game-page");
+      }
+
+      // PERBAIKAN: Pindahkan showPage ke sini.
+      if (typeof window.showPage === "function") {
+        window.showPage("game-page");
       }
     });
   }
@@ -647,36 +689,37 @@ window.addEventListener("pywebviewready", () => {
   // ==================================================================
   let isProgrammaticallyChanging = false;
 
-  function setPythonVolume(volume) {
-    const numericVolume = parseFloat(volume);
+  // PERBAIKAN: Fungsi baru untuk mengatur SEMUA suara
+  function setAllVolumes(normalizedVolume) {
+    // 1. Kirim ke Python (untuk win, draw, score)
     if (
       window.pywebview &&
       window.pywebview.api &&
       typeof window.pywebview.api.set_volume === "function"
     ) {
       try {
-        // Kirim nilai antara 0.0 dan 1.0
-        window.pywebview.api.set_volume(numericVolume);
+        window.pywebview.api.set_volume(normalizedVolume);
       } catch (e) {
-        console.error("Gagal mengatur volume di Python:", e);
+        console.error("Gagal mengatur volume Python:", e);
       }
+    }
+
+    // 2. Terapkan ke JS (untuk click)
+    if (soundClick) {
+      soundClick.volume = normalizedVolume;
     }
   }
 
   function loadAudioSettings() {
-    // Volume disimpan sebagai 0.0 - 1.0
-    let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
+    let savedVolume = localStorage.getItem("ticTacToeVolume") || 0.5;
     const isMuted = false;
     if (soundToggle) soundToggle.checked = true;
     if (volumeSlider) volumeSlider.disabled = false;
-
-    if (parseFloat(savedVolume) === 0) savedVolume = 1.0;
-
-    // PERBAIKAN: Set nilai slider (0-100)
+    if (parseFloat(savedVolume) === 0) savedVolume = 0.5;
     if (volumeSlider) volumeSlider.value = parseFloat(savedVolume) * 100;
 
-    // Kirim nilai 0.0-1.0 ke Python
-    setPythonVolume(savedVolume);
+    // Gunakan fungsi baru
+    setAllVolumes(savedVolume);
 
     try {
       localStorage.setItem("ticTacToeMuted", isMuted);
@@ -686,22 +729,16 @@ window.addEventListener("pywebviewready", () => {
 
   function handleSliderInput(event) {
     if (isProgrammaticallyChanging) return;
-
-    // Nilai slider adalah 0-100
     const intendedVolume = event.target.value;
-
-    // PERBAIKAN: Normalisasi nilai ke 0.0-1.0
     const normalizedVolume = parseFloat(intendedVolume) / 100;
 
     try {
-      // Simpan nilai 0.0-1.0
       localStorage.setItem("ticTacToeVolume", normalizedVolume);
     } catch (e) {}
 
-    // Kirim nilai 0.0-1.0 ke Python
-    setPythonVolume(normalizedVolume);
+    // Gunakan fungsi baru
+    setAllVolumes(normalizedVolume);
 
-    // PERBAIKAN: Cek terhadap nilai 0.0
     if (normalizedVolume === 0 && soundToggle && soundToggle.checked) {
       isProgrammaticallyChanging = true;
       soundToggle.checked = false;
@@ -722,26 +759,22 @@ window.addEventListener("pywebviewready", () => {
 
     if (isMuted) {
       if (volumeSlider) volumeSlider.disabled = true;
-      setPythonVolume(0);
+      setAllVolumes(0); // Set semua suara ke 0
     } else {
       if (volumeSlider) volumeSlider.disabled = false;
-
-      // Ambil nilai 0.0-1.0
-      let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
+      let savedVolume = localStorage.getItem("ticTacToeVolume") || 0.5;
       if (parseFloat(savedVolume) === 0) {
-        savedVolume = 1.0;
+        savedVolume = 0.5;
         try {
           localStorage.setItem("ticTacToeVolume", savedVolume);
         } catch (e) {}
       }
-
       isProgrammaticallyChanging = true;
-      // PERBAIKAN: Set nilai slider (0-100)
       if (volumeSlider) volumeSlider.value = parseFloat(savedVolume) * 100;
       isProgrammaticallyChanging = false;
 
-      // Kirim nilai 0.0-1.0 ke Python
-      setPythonVolume(savedVolume);
+      // Gunakan fungsi baru
+      setAllVolumes(savedVolume);
     }
   }
 
@@ -773,17 +806,13 @@ window.addEventListener("pywebviewready", () => {
   // ==================================================================
   // Background color/image picker
   // ==================================================================
-
   const BG_IMAGE_URL = "assets/images/bg1.jpg"; // Default path
 
   function applyBackgroundType(typeOrColor) {
     const bgEl = document.querySelector(".background");
     const overlay = document.querySelector(".background-overlay");
     if (!bgEl) return;
-
     if (!typeOrColor || typeOrColor === "image") {
-      // Fungsi ini dipanggil oleh bgResetBtn (yang sudah dihapus)
-      // Jadi, ini adalah "reset" fallback
       bgEl.style.backgroundImage = `url('${BG_IMAGE_URL}')`; // Tetapkan ke BG1
       bgEl.style.backgroundColor = "";
       bgEl.style.backgroundSize = "auto";
