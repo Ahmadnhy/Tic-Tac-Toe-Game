@@ -103,7 +103,7 @@
         </div>
       </div>
     </div>
-    
+
     <div id="end-page" class="page-container winner-page">
       <div class="content-frame">
         <div class="trophy-icon-container">
@@ -112,7 +112,8 @@
 
         <h1 id="label-title" class="winner-title">CONGRATULATIONS!</h1>
         <p id="label-subtitle" class="winner-subtitle">
-          Pemenangnya Adalah: <span id="winner-name-placeholder">Nama Player (X)</span>
+          Pemenangnya Adalah:
+          <span id="winner-name-placeholder">Nama Player (X)</span>
         </p>
 
         <button id="play-again-btn" class="btn btn-primary btn-shine">
@@ -124,16 +125,14 @@
       </div>
       <div class="confetti-effect"></div>
     </div>
-    <!-- ================= SETTINGS MODAL ================= -->
+
     <div id="settings-modal" class="modal-overlay">
       <div class="modal-content">
         <span class="modal-close-btn" id="settings-modal-close">&times;</span>
         <h1>Settings</h1>
 
         <div class="settings-container">
-
-          <!-- Suara -->
-          <div class="setting-item">
+          <div class="setting-item setting-item-row">
             <label for="sound-toggle">Suara</label>
             <div class="toggle-switch">
               <input type="checkbox" id="sound-toggle" checked />
@@ -141,36 +140,61 @@
             </div>
           </div>
 
-          <!-- Volume -->
-          <div class="setting-item">
+          <div class="setting-item setting-item-row">
             <label>Volume</label>
             <div class="volume-control-container">
               <i class="fas fa-volume-down volume-icon"></i>
-              <input type="range" id="volume-slider" min="0" max="100" step="0.1" value="50" />
+              <input
+                type="range"
+                id="volume-slider"
+                min="0"
+                max="100"
+                step="0.1"
+                value="50"
+              />
               <i class="fas fa-volume-up volume-icon"></i>
             </div>
           </div>
 
-          <!-- Background (warna & gambar) -->
-          <div class="setting-item">
-            <label>Pilih Background (gambar / warna)</label>
-            <div class="color-free" style="justify-content:flex-end;">
-              <input type="color" id="bg-color-picker" value="#0b1020" title="Pilih warna background" />
-              <button id="bg-apply-btn" class="btn btn-secondary" style="width:auto; padding:8px 12px; margin-left:8px;">Terapkan</button>
-              <button id="bg-reset-btn" class="btn btn-secondary" style="width:auto; padding:8px 12px; margin-left:8px;">Kembali ke Gambar</button>
+          <div class="setting-item setting-item-row">
+            <label for="bg-color-picker">Custom Background</label>
+            <div class="color-custom-pair">
+              <input
+                type="color"
+                id="bg-color-picker"
+                value="#0b1020"
+                title="Pilih warna custom"
+              />
+              <button id="bg-apply-btn" class="btn btn-secondary">
+                Terapkan
+              </button>
             </div>
           </div>
 
-          <!-- Tambahan tombol gambar -->
           <div class="setting-item">
-            <label>Ganti Background Gambar</label>
-            <div class="color-free" style="justify-content:flex-end; gap:8px;">
-              <button class="btn btn-secondary bg-img-btn" data-bg="assets/images/bg2.jpeg">BG 2</button>
-              <button class="btn btn-secondary bg-img-btn" data-bg="assets/images/bg3.jpeg">BG 3</button>
+            <label>Tema Background</label>
+            <div class="color-free">
+              <button
+                class="btn btn-secondary bg-img-btn"
+                data-bg="assets/images/bg1.jpg"
+              >
+                BG 1
+              </button>
+              <button
+                class="btn btn-secondary bg-img-btn"
+                data-bg="assets/images/bg2.jpeg"
+              >
+                BG 2
+              </button>
+              <button
+                class="btn btn-secondary bg-img-btn"
+                data-bg="assets/images/bg3.jpeg"
+              >
+                BG 3
+              </button>
             </div>
           </div>
 
-          <!-- Warna X dan O -->
           <div class="setting-item">
             <label>Pilih Warna X dan O</label>
             <div class="color-settings">
@@ -184,12 +208,9 @@
               </div>
             </div>
           </div>
-
-        </div> <!-- end of .settings-container -->
-      </div> <!-- end of .modal-content -->
-    </div> <!-- end of #settings-modal -->
-
-
+        </div>
+      </div>
+    </div>
     <div id="credits-modal" class="modal-overlay">
       <div class="modal-content">
         <span class="modal-close-btn" id="modal-close">&times;</span>
@@ -198,7 +219,7 @@
         <div class="team-container" style="margin-bottom: 35px">
           <div class="team-member">
             <img
-              src="assets/images/tim1.jpg"
+              src="assets/images/mamad.jpg"
               alt="Foto Tim 1"
               class="team-photo"
             />
@@ -383,7 +404,9 @@
                   stroke-linejoin="round"
                 >
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <path
+                    d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                  ></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </a>
@@ -438,7 +461,6 @@
             </div>
           </div>
 
-
           <div class="team-member">
             <img
               src="assets/images/dzaky.jpg"
@@ -465,7 +487,9 @@
                   stroke-linejoin="round"
                 >
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <path
+                    d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                  ></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </a>
@@ -546,7 +570,9 @@
                   stroke-linejoin="round"
                 >
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <path
+                    d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+                  ></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </a>
@@ -600,7 +626,6 @@
               </a>
             </div>
           </div>
-
         </div>
       </div>
     </div>

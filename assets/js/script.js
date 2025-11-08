@@ -1,8 +1,8 @@
 // fallback untuk development di browser: kirim event 'pywebviewready' jika tidak ada pywebview
 if (!window.pywebview) {
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
-      window.dispatchEvent(new Event('pywebviewready'));
+      window.dispatchEvent(new Event("pywebviewready"));
     }, 0);
   });
 }
@@ -93,67 +93,97 @@ window.addEventListener("pywebviewready", () => {
   const oColorPicker = document.getElementById("o-color-picker");
   const bgColorPicker = document.getElementById("bg-color-picker");
   const bgApplyBtn = document.getElementById("bg-apply-btn");
-  const bgResetBtn = document.getElementById("bg-reset-btn");
+  // const bgResetBtn = document.getElementById("bg-reset-btn"); // Dihapus
 
   // ==================================================================
   // Helper: baca CSS vars bila kamu pakai :root vars
   // ==================================================================
   function readCssVar(name) {
     try {
-      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return getComputedStyle(document.documentElement)
+        .getPropertyValue(name)
+        .trim();
     } catch (e) {
       return "";
     }
   }
 
   function updateColorsFromCss() {
-    const x = readCssVar('--x-color') || COLOR_X;
-    const o = readCssVar('--o-color') || COLOR_O;
-    const grid = readCssVar('--grid-color') || COLOR_GRID;
+    const x = readCssVar("--x-color") || COLOR_X;
+    const o = readCssVar("--o-color") || COLOR_O;
+    const grid = readCssVar("--grid-color") || COLOR_GRID;
     if (x) COLOR_X = x;
     if (o) COLOR_O = o;
     if (grid) COLOR_GRID = grid;
-    try { drawGrid(); } catch(e) { /* ignore */ }
+    try {
+      drawGrid();
+    } catch (e) {
+      /* ignore */
+    }
   }
 
   // attach quick theme circles (jika ada .color-circle di DOM)
-  (function attachColorCircles(){
-    const circles = document.querySelectorAll('.color-circle');
+  (function attachColorCircles() {
+    const circles = document.querySelectorAll(".color-circle");
     if (!circles || circles.length === 0) return;
-    circles.forEach(c => {
-      c.addEventListener('click', () => {
+    circles.forEach((c) => {
+      c.addEventListener("click", () => {
         const theme = c.dataset.theme || null;
         if (!theme) {
           const bg = c.style.backgroundColor;
           if (bg) {
-            document.documentElement.style.setProperty('--accent-color', bg);
-            document.documentElement.style.setProperty('--x-color', bg);
+            document.documentElement.style.setProperty("--accent-color", bg);
+            document.documentElement.style.setProperty("--x-color", bg);
           }
         } else {
           const map = {
-            default: {'--x-color': '#ff715b','--o-color':'#7bd389','--grid-color':'rgba(255,255,255,0.06)'},
-            dark: {'--x-color':'#ff6b6b','--o-color':'#9ad29a','--grid-color':'rgba(255,255,255,0.04)'},
-            pink: {'--x-color':'#ff3b79','--o-color':'#800040','--grid-color':'rgba(255,255,255,0.03)'},
-            blue: {'--x-color':'#005f99','--o-color':'#007BFF','--grid-color':'rgba(255,255,255,0.05)'},
-            green: {'--x-color':'#2e8b57','--o-color':'#33cc66','--grid-color':'rgba(255,255,255,0.05)'}
+            default: {
+              "--x-color": "#ff715b",
+              "--o-color": "#7bd389",
+              "--grid-color": "rgba(255,255,255,0.06)",
+            },
+            dark: {
+              "--x-color": "#ff6b6b",
+              "--o-color": "#9ad29a",
+              "--grid-color": "rgba(255,255,255,0.04)",
+            },
+            pink: {
+              "--x-color": "#ff3b79",
+              "--o-color": "#800040",
+              "--grid-color": "rgba(255,255,255,0.03)",
+            },
+            blue: {
+              "--x-color": "#005f99",
+              "--o-color": "#007BFF",
+              "--grid-color": "rgba(255,255,255,0.05)",
+            },
+            green: {
+              "--x-color": "#2e8b57",
+              "--o-color": "#33cc66",
+              "--grid-color": "rgba(255,255,255,0.05)",
+            },
           };
           const vars = map[theme] || map.default;
-          Object.keys(vars).forEach(k => document.documentElement.style.setProperty(k, vars[k]));
-          try { localStorage.setItem('tic_theme', theme); } catch(e){}
+          Object.keys(vars).forEach((k) =>
+            document.documentElement.style.setProperty(k, vars[k])
+          );
+          try {
+            localStorage.setItem("tic_theme", theme);
+          } catch (e) {}
         }
-        circles.forEach(x=>x.classList.remove('active'));
-        c.classList.add('active');
+        circles.forEach((x) => x.classList.remove("active"));
+        c.classList.add("active");
         updateColorsFromCss();
       });
     });
     // apply saved theme if exists
     try {
-      const saved = localStorage.getItem('tic_theme');
+      const saved = localStorage.getItem("tic_theme");
       if (saved) {
-        const el = Array.from(circles).find(x=>x.dataset.theme===saved);
-        if (el) el.classList.add('active');
+        const el = Array.from(circles).find((x) => x.dataset.theme === saved);
+        if (el) el.classList.add("active");
       }
-    } catch(e){}
+    } catch (e) {}
   })();
 
   // Apply initial colors from CSS var if present
@@ -187,10 +217,15 @@ window.addEventListener("pywebviewready", () => {
 
   window.updateTurnLabel = async (player) => {
     try {
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.get_player_names === 'function') {
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.get_player_names === "function"
+      ) {
         playerNames = await window.pywebview.api.get_player_names();
       }
-      if (labelStatus) labelStatus.textContent = `Giliran: ${playerNames[player]} (${player})`;
+      if (labelStatus)
+        labelStatus.textContent = `Giliran: ${playerNames[player]} (${player})`;
     } catch (e) {
       console.error("Gagal mendapatkan nama pemain:", e);
       const name = player === "X" ? "Player 1" : "Player 2";
@@ -272,12 +307,28 @@ window.addEventListener("pywebviewready", () => {
     const start = getCellCenter(pattern[0]);
     const end = getCellCenter(pattern[2]);
     const padding = CELL_SIZE * 0.3;
-    let x0 = start.x, y0 = start.y, x1 = end.x, y1 = end.y;
+    let x0 = start.x,
+      y0 = start.y,
+      x1 = end.x,
+      y1 = end.y;
 
-    if (y0 === y1) { x0 = padding; x1 = canvas.width - padding; }
-    else if (x0 === x1) { y0 = padding; y1 = canvas.height - padding; }
-    else if (x0 < x1) { x0 = padding; y0 = padding; x1 = canvas.width - padding; y1 = canvas.height - padding; }
-    else { x0 = canvas.width - padding; y0 = padding; x1 = padding; y1 = canvas.height - padding; }
+    if (y0 === y1) {
+      x0 = padding;
+      x1 = canvas.width - padding;
+    } else if (x0 === x1) {
+      y0 = padding;
+      y1 = canvas.height - padding;
+    } else if (x0 < x1) {
+      x0 = padding;
+      y0 = padding;
+      x1 = canvas.width - padding;
+      y1 = canvas.height - padding;
+    } else {
+      x0 = canvas.width - padding;
+      y0 = padding;
+      x1 = padding;
+      y1 = canvas.height - padding;
+    }
 
     ctx.strokeStyle = COLOR_WIN_LINE;
     ctx.lineWidth = 7;
@@ -319,8 +370,17 @@ window.addEventListener("pywebviewready", () => {
     }
 
     setTimeout(() => {
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.reset_board_from_js === 'function') {
-        try { window.pywebview.api.reset_board_from_js(); } catch(e) { console.error(e); window.resetBoardUI(); }
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.reset_board_from_js === "function"
+      ) {
+        try {
+          window.pywebview.api.reset_board_from_js();
+        } catch (e) {
+          console.error(e);
+          window.resetBoardUI();
+        }
       } else {
         window.resetBoardUI();
       }
@@ -329,8 +389,17 @@ window.addEventListener("pywebviewready", () => {
 
   window.handleDraw = () => {
     setTimeout(() => {
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.reset_board_from_js === 'function') {
-        try { window.pywebview.api.reset_board_from_js(); } catch(e) { console.error(e); window.resetBoardUI(); }
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.reset_board_from_js === "function"
+      ) {
+        try {
+          window.pywebview.api.reset_board_from_js();
+        } catch (e) {
+          console.error(e);
+          window.resetBoardUI();
+        }
       } else {
         window.resetBoardUI();
       }
@@ -342,21 +411,27 @@ window.addEventListener("pywebviewready", () => {
   // ==================================================================
   if (btnMainMenuStart) {
     btnMainMenuStart.addEventListener("click", () => {
-      if (typeof window.showPage === 'function') window.showPage("home-page");
+      if (typeof window.showPage === "function") window.showPage("home-page");
     });
   }
 
   if (btnMainMenuExit) {
     btnMainMenuExit.addEventListener("click", () => {
       try {
-        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.exit_game === 'function') {
+        if (
+          window.pywebview &&
+          window.pywebview.api &&
+          typeof window.pywebview.api.exit_game === "function"
+        ) {
           window.pywebview.api.exit_game();
         } else {
           window.close();
         }
       } catch (e) {
         console.error("Gagal memanggil exit_game():", e);
-        try { window.close(); } catch(err) {}
+        try {
+          window.close();
+        } catch (err) {}
       }
     });
   }
@@ -375,14 +450,19 @@ window.addEventListener("pywebviewready", () => {
         if (player1ScoreEl) player1ScoreEl.textContent = "0";
         if (player2ScoreEl) player2ScoreEl.textContent = "0";
 
-        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.start_game === 'function') {
+        if (
+          window.pywebview &&
+          window.pywebview.api &&
+          typeof window.pywebview.api.start_game === "function"
+        ) {
           window.pywebview.api.start_game(name1, name2);
         } else {
           // fallback untuk testing di browser
           playerNames.X = name1;
           playerNames.O = name2;
-          if (typeof window.showPage === 'function') window.showPage('game-page');
-          if (typeof window.resetBoardUI === 'function') window.resetBoardUI();
+          if (typeof window.showPage === "function")
+            window.showPage("game-page");
+          if (typeof window.resetBoardUI === "function") window.resetBoardUI();
         }
       }
     });
@@ -390,7 +470,8 @@ window.addEventListener("pywebviewready", () => {
 
   if (btnBackToMainMenu) {
     btnBackToMainMenu.addEventListener("click", () => {
-      if (typeof window.showPage === 'function') window.showPage("main-menu-page");
+      if (typeof window.showPage === "function")
+        window.showPage("main-menu-page");
     });
   }
 
@@ -409,10 +490,14 @@ window.addEventListener("pywebviewready", () => {
       const yInCell = y % (CELL_SIZE + LINE_WIDTH);
       if (xInCell < CELL_SIZE && yInCell < CELL_SIZE) {
         const index = row * 3 + col;
-        if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.cell_clicked === 'function') {
+        if (
+          window.pywebview &&
+          window.pywebview.api &&
+          typeof window.pywebview.api.cell_clicked === "function"
+        ) {
           window.pywebview.api.cell_clicked(index);
         } else {
-          console.log('cell clicked (fallback):', index);
+          console.log("cell clicked (fallback):", index);
         }
       }
     });
@@ -420,7 +505,11 @@ window.addEventListener("pywebviewready", () => {
 
   if (btnResetGame) {
     btnResetGame.addEventListener("click", () => {
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.reset_board_from_js === 'function') {
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.reset_board_from_js === "function"
+      ) {
         window.pywebview.api.reset_board_from_js();
       } else {
         window.resetBoardUI();
@@ -430,10 +519,14 @@ window.addEventListener("pywebviewready", () => {
 
   if (btnBackToHome) {
     btnBackToHome.addEventListener("click", () => {
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.go_to_home === 'function') {
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.go_to_home === "function"
+      ) {
         window.pywebview.api.go_to_home();
-      } else if (typeof window.showPage === 'function') {
-        window.showPage('home-page');
+      } else if (typeof window.showPage === "function") {
+        window.showPage("home-page");
       }
     });
   }
@@ -451,21 +544,28 @@ window.addEventListener("pywebviewready", () => {
 
       if (player1Score > player2Score) {
         if (labelTitle) labelTitle.textContent = "PEMENANG AKHIR";
-        if (labelSubtitle) labelSubtitle.textContent = `${p1Name} (X) - Skor: ${player1Score}`;
+        if (labelSubtitle)
+          labelSubtitle.textContent = `${p1Name} (X) - Skor: ${player1Score}`;
       } else if (player2Score > player1Score) {
         if (labelTitle) labelTitle.textContent = "PEMENANG AKHIR";
-        if (labelSubtitle) labelSubtitle.textContent = `${p2Name} (O) - Skor: ${player2Score}`;
+        if (labelSubtitle)
+          labelSubtitle.textContent = `${p2Name} (O) - Skor: ${player2Score}`;
       } else {
         if (labelTitle) labelTitle.textContent = "PERMAINAN SERI";
-        if (labelSubtitle) labelSubtitle.textContent = `Skor Akhir: ${p1Name} (${player1Score}) - ${p2Name} (${player2Score})`;
+        if (labelSubtitle)
+          labelSubtitle.textContent = `Skor Akhir: ${p1Name} (${player1Score}) - ${p2Name} (${player2Score})`;
       }
-      if (typeof window.showPage === 'function') window.showPage("end-page");
+      if (typeof window.showPage === "function") window.showPage("end-page");
     });
   }
 
   if (btnNewGame) {
     btnNewGame.addEventListener("click", () => {
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.reset_board_from_js === 'function') {
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.reset_board_from_js === "function"
+      ) {
         window.pywebview.api.reset_board_from_js();
       } else {
         window.resetBoardUI();
@@ -479,21 +579,29 @@ window.addEventListener("pywebviewready", () => {
       player2Score = 0;
       if (player1ScoreEl) player1ScoreEl.textContent = "0";
       if (player2ScoreEl) player2ScoreEl.textContent = "0";
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.reset_board_from_js === 'function') {
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.reset_board_from_js === "function"
+      ) {
         window.pywebview.api.reset_board_from_js();
       } else {
-        if (typeof window.resetBoardUI === 'function') window.resetBoardUI();
-        if (typeof window.showPage === 'function') window.showPage('game-page');
+        if (typeof window.resetBoardUI === "function") window.resetBoardUI();
+        if (typeof window.showPage === "function") window.showPage("game-page");
       }
     });
   }
 
   if (btnBackToHome2) {
     btnBackToHome2.addEventListener("click", () => {
-      if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.go_to_home === 'function') {
+      if (
+        window.pywebview &&
+        window.pywebview.api &&
+        typeof window.pywebview.api.go_to_home === "function"
+      ) {
         window.pywebview.api.go_to_home();
-      } else if (typeof window.showPage === 'function') {
-        window.showPage('home-page');
+      } else if (typeof window.showPage === "function") {
+        window.showPage("home-page");
       }
     });
   }
@@ -541,7 +649,11 @@ window.addEventListener("pywebviewready", () => {
 
   function setPythonVolume(volume) {
     const numericVolume = parseFloat(volume);
-    if (window.pywebview && window.pywebview.api && typeof window.pywebview.api.set_volume === 'function') {
+    if (
+      window.pywebview &&
+      window.pywebview.api &&
+      typeof window.pywebview.api.set_volume === "function"
+    ) {
       try {
         window.pywebview.api.set_volume(numericVolume);
       } catch (e) {
@@ -561,19 +673,29 @@ window.addEventListener("pywebviewready", () => {
     try {
       localStorage.setItem("ticTacToeMuted", isMuted);
       localStorage.setItem("ticTacToeVolume", savedVolume);
-    } catch(e){}
+    } catch (e) {}
   }
 
   function handleSliderInput(event) {
     if (isProgrammaticallyChanging) return;
     const intendedVolume = event.target.value;
-    try { localStorage.setItem("ticTacToeVolume", intendedVolume); } catch(e){}
+    try {
+      localStorage.setItem("ticTacToeVolume", intendedVolume);
+    } catch (e) {}
     setPythonVolume(intendedVolume);
-    if (parseFloat(intendedVolume) === 0 && soundToggle && soundToggle.checked) {
+    if (
+      parseFloat(intendedVolume) === 0 &&
+      soundToggle &&
+      soundToggle.checked
+    ) {
       isProgrammaticallyChanging = true;
       soundToggle.checked = false;
       isProgrammaticallyChanging = false;
-    } else if (parseFloat(intendedVolume) > 0 && soundToggle && !soundToggle.checked) {
+    } else if (
+      parseFloat(intendedVolume) > 0 &&
+      soundToggle &&
+      !soundToggle.checked
+    ) {
       isProgrammaticallyChanging = true;
       soundToggle.checked = true;
       isProgrammaticallyChanging = false;
@@ -583,7 +705,9 @@ window.addEventListener("pywebviewready", () => {
   function handleToggleChange(event) {
     if (isProgrammaticallyChanging) return;
     const isMuted = !(soundToggle && soundToggle.checked);
-    try { localStorage.setItem("ticTacToeMuted", isMuted); } catch(e){}
+    try {
+      localStorage.setItem("ticTacToeMuted", isMuted);
+    } catch (e) {}
     if (isMuted) {
       if (volumeSlider) volumeSlider.disabled = true;
       setPythonVolume(0);
@@ -592,7 +716,9 @@ window.addEventListener("pywebviewready", () => {
       let savedVolume = localStorage.getItem("ticTacToeVolume") || 1.0;
       if (parseFloat(savedVolume) === 0) {
         savedVolume = 1.0;
-        try { localStorage.setItem("ticTacToeVolume", savedVolume); } catch(e){}
+        try {
+          localStorage.setItem("ticTacToeVolume", savedVolume);
+        } catch (e) {}
       }
       isProgrammaticallyChanging = true;
       if (volumeSlider) volumeSlider.value = savedVolume;
@@ -608,61 +734,76 @@ window.addEventListener("pywebviewready", () => {
   // Custom color pickers for X and O
   // ==================================================================
   if (xColorPicker) {
-    xColorPicker.addEventListener('input', () => {
+    xColorPicker.addEventListener("input", () => {
       COLOR_X = xColorPicker.value;
-      try { document.documentElement.style.setProperty('--x-color', COLOR_X); } catch(e){}
+      try {
+        document.documentElement.style.setProperty("--x-color", COLOR_X);
+      } catch (e) {}
       drawGrid();
     });
   }
   if (oColorPicker) {
-    oColorPicker.addEventListener('input', () => {
+    oColorPicker.addEventListener("input", () => {
       COLOR_O = oColorPicker.value;
-      try { document.documentElement.style.setProperty('--o-color', COLOR_O); } catch(e){}
+      try {
+        document.documentElement.style.setProperty("--o-color", COLOR_O);
+      } catch (e) {}
       drawGrid();
     });
   }
 
   // ==================================================================
   // Background color/image picker
-  // - background element: .background (image) and .background-overlay
-  // - apply color will remove background-image and set background-color
-  // - reset will restore background-image
   // ==================================================================
-  const BG_IMAGE_URL = "assets/images/background.jpg"; // sesuaikan path jika perlu
+
+  // PERUBAHAN: Mengganti default URL ke bg1.jpg
+  const BG_IMAGE_URL = "assets/images/bg1.jpg";
+
   function applyBackgroundType(typeOrColor) {
-    const bgEl = document.querySelector('.background');
-    const overlay = document.querySelector('.background-overlay');
+    const bgEl = document.querySelector(".background");
+    const overlay = document.querySelector(".background-overlay");
     if (!bgEl) return;
-    if (!typeOrColor || typeOrColor === 'image') {
-      bgEl.style.backgroundImage = `url('${BG_IMAGE_URL}')`;
-      bgEl.style.backgroundColor = '';
-      bgEl.style.backgroundSize = 'auto';
-      if (overlay) overlay.style.display = '';
-      try { localStorage.setItem('ticTacToeBg', 'image'); } catch(e){}
+    if (!typeOrColor || typeOrColor === "image") {
+      // Fungsi ini sekarang hanya untuk reset ke warna,
+      // jadi kita tidak benar-benar butuh BG_IMAGE_URL lagi,
+      // tapi biarkan saja untuk konsistensi.
+      bgEl.style.backgroundImage = `url('${BG_IMAGE_URL}')`; // Tetapkan ke BG1
+      bgEl.style.backgroundColor = "";
+      bgEl.style.backgroundSize = "auto";
+      if (overlay) overlay.style.display = "";
+      try {
+        localStorage.setItem("ticTacToeBg", "image");
+        localStorage.setItem("ticTacToeBgPath", BG_IMAGE_URL); // Simpan BG1
+      } catch (e) {}
     } else {
-      bgEl.style.backgroundImage = 'none';
+      // Ini untuk menerapkan warna custom
+      bgEl.style.backgroundImage = "none";
       bgEl.style.backgroundColor = typeOrColor;
-      bgEl.style.backgroundSize = 'cover';
-      if (overlay) overlay.style.display = 'none';
-      try { localStorage.setItem('ticTacToeBg', typeOrColor); } catch(e){}
+      bgEl.style.backgroundSize = "cover";
+      if (overlay) overlay.style.display = "none";
+      try {
+        localStorage.setItem("ticTacToeBg", typeOrColor);
+        localStorage.removeItem("ticTacToeBgPath"); // Hapus path gambar
+      } catch (e) {}
     }
   }
 
   // ==================================================================
-  // Tambahan: dukungan background bergambar (BG2, BG3, dst.)
+  // Dukungan background bergambar (BG1, BG2, BG3, dst.)
   // ==================================================================
   const bgButtons = document.querySelectorAll(".bg-img-btn");
-  bgButtons.forEach(btn => {
+  bgButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const bgEl = document.querySelector(".background");
       const overlay = document.querySelector(".background-overlay");
-      const bgPath = btn.dataset.bg;
+      const bgPath = btn.dataset.bg; // Ambil path dari tombol (mis: "assets/images/bg1.jpg")
       if (bgEl && bgPath) {
         bgEl.style.backgroundImage = `url('${bgPath}')`;
         bgEl.style.backgroundColor = "";
-        bgEl.style.backgroundSize = "cover";
-        if (overlay) overlay.style.display = "";
+        bgEl.style.backgroundSize = "cover"; // Set ke cover agar pas
+        if (overlay) overlay.style.display = ""; // Tampilkan overlay
         try {
+          // Simpan path gambar yg dipilih
           localStorage.setItem("ticTacToeBg", "image");
           localStorage.setItem("ticTacToeBgPath", bgPath);
         } catch (e) {}
@@ -677,41 +818,36 @@ window.addEventListener("pywebviewready", () => {
       const savedPath = localStorage.getItem("ticTacToeBgPath");
       const bgEl = document.querySelector(".background");
       const overlay = document.querySelector(".background-overlay");
-      if (bgEl && savedType) {
-        if (savedType === "image" && savedPath) {
-          bgEl.style.backgroundImage = `url('${savedPath}')`;
-          bgEl.style.backgroundColor = "";
-          bgEl.style.backgroundSize = "cover";
-          if (overlay) overlay.style.display = "";
-        } else if (savedType.startsWith("#")) {
-          bgEl.style.backgroundImage = "none";
-          bgEl.style.backgroundColor = savedType;
-          bgEl.style.backgroundSize = "cover";
-          if (overlay) overlay.style.display = "none";
-        }
+      if (!bgEl) return;
+
+      // 1. Jika ada path gambar yg tersimpan, gunakan itu.
+      if (savedType === "image" && savedPath) {
+        bgEl.style.backgroundImage = `url('${savedPath}')`;
+        bgEl.style.backgroundColor = "";
+        bgEl.style.backgroundSize = "cover";
+        if (overlay) overlay.style.display = "";
       }
+      // 2. Jika tidak ada path, tapi tipenya adalah warna, gunakan warna itu.
+      else if (savedType && savedType.startsWith("#")) {
+        bgEl.style.backgroundImage = "none";
+        bgEl.style.backgroundColor = savedType;
+        bgEl.style.backgroundSize = "cover";
+        if (overlay) overlay.style.display = "none";
+      }
+      // 3. Jika tidak ada yg tersimpan (pertama kali main), CSS default (bg1.jpg)
+      //    akan otomatis diterapkan.
     } catch (e) {}
   });
 
-
-  // apply saved bg (if any)
-  try {
-    const savedBg = localStorage.getItem('ticTacToeBg');
-    if (savedBg) applyBackgroundType(savedBg);
-  } catch(e){}
-
+  // Listener untuk tombol "Terapkan" warna custom
   if (bgApplyBtn && bgColorPicker) {
-    bgApplyBtn.addEventListener('click', () => {
+    bgApplyBtn.addEventListener("click", () => {
       applyBackgroundType(bgColorPicker.value);
     });
   }
-  if (bgResetBtn) {
-    bgResetBtn.addEventListener('click', () => {
-      applyBackgroundType('image');
-    });
-  }
 
+  // Muat pengaturan audio, gambar grid, dan tampilkan halaman utama
   loadAudioSettings();
   drawGrid();
-  if (typeof window.showPage === 'function') window.showPage("main-menu-page");
+  if (typeof window.showPage === "function") window.showPage("main-menu-page");
 });

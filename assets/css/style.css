@@ -1,13 +1,18 @@
 /* Global style dan Font */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap");
 
-:root{
-  --bg-color: rgba(21,22,24,1);       /* fallback background (dipakai bila mau override) */
-  --panel-bg: rgba(255,255,255,0.08); /* modal / panel background */
-  --overlay-bg: rgba(24,24,24,0.7);   /* overlay warna */
-  --accent-color: #4da8da;            /* tombol / border highlight */
-  --x-color: #ff715b;                 /* warna X di canvas */
-  --o-color: #7bd389;                 /* warna O di canvas */
+:root {
+  --bg-color: rgba(
+    21,
+    22,
+    24,
+    1
+  ); /* fallback background (dipakai bila mau override) */
+  --panel-bg: rgba(255, 255, 255, 0.08); /* modal / panel background */
+  --overlay-bg: rgba(24, 24, 24, 0.7); /* overlay warna */
+  --accent-color: #4da8da; /* tombol / border highlight */
+  --x-color: #ff715b; /* warna X di canvas */
+  --o-color: #7bd389; /* warna O di canvas */
   --text-light: #f0f0f0;
   --text-dark: #333333;
 }
@@ -38,15 +43,17 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  
+
   /* Default: gambar utama */
-  background-image: url("../images/background.jpg");
-  background-repeat: no-repeat;
+  background-image: url("../images/bg1.jpg");
+  background-repeat: repeat;
+  background-size: auto;
   background-position: center;
   background-size: cover;
 
   /* Transisi halus saat ganti tema/gambar */
-  transition: background-image 0.6s ease-in-out, background-color 0.4s ease-in-out;
+  transition: background-image 0.6s ease-in-out,
+    background-color 0.4s ease-in-out;
 
   z-index: -2;
   opacity: 1;
@@ -453,13 +460,17 @@ p {
 /* ================================== */
 
 #settings-modal .modal-content {
-  max-width: 400px;
+  max-width: 500px;
   text-align: left;
+  max-height: 70vh; /* Ditinggikan */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Judul modal settings di tengah */
 #settings-modal .modal-content h1 {
   text-align: center;
+  flex-shrink: 0;
 }
 
 /* Konten di dalam Modal Settings */
@@ -469,6 +480,17 @@ p {
   gap: 25px;
   margin-top: 30px;
   padding: 0 10px;
+  overflow-y: auto; /* Scroll aktif */
+  padding-right: 10px;
+
+  /* Menyembunyikan scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Menyembunyikan scrollbar untuk Webkit (Chrome, Safari) */
+.settings-container::-webkit-scrollbar {
+  display: none;
 }
 
 .setting-item {
@@ -499,7 +521,7 @@ p {
 }
 
 /* ================================== */
-/* Styling Slider Volume   */
+/* Styling Slider Volume    */
 /* ================================== */
 
 /* 1. General Slider Reset */
@@ -633,26 +655,22 @@ p {
   height: 34px;
   border-radius: 50%;
   cursor: pointer;
-  border: 2px solid rgba(255,255,255,0.12);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
-  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.12s ease, border-color 0.12s ease,
+    box-shadow 0.12s ease;
 }
 
 .color-circle:hover {
   transform: scale(1.12);
-  border-color: rgba(255,255,255,0.3);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .color-circle.active {
   transform: scale(1.18);
   border-color: #fff;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
 }
-
-@media (max-width: 420px) {
-  /* Hapus baris di bawah ini yang menyebabkan error (sebelumnya ada baris yang tidak lengkap di sini) */
-}
-
 
 /* ================================== */
 /* ===== HALAMAN PEMENANG (END PAGE) BARU ===== */
@@ -661,10 +679,10 @@ p {
 /* Gaya khusus untuk halaman pemenang */
 #end-page {
   /* Halaman Pemenang berada di atas semua elemen game lainnya */
-  z-index: 50; 
+  z-index: 50;
   /* Pastikan halaman pemenang menutupi overlay game */
-  background-color: var(--overlay-bg); 
-  backdrop-filter: blur(5px); 
+  background-color: var(--overlay-bg);
+  backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
 }
 
@@ -696,9 +714,9 @@ p {
   /* Membuat nama pemenang lebih menonjol */
 }
 #end-page .winner-subtitle #winner-name-placeholder {
-    font-weight: 700;
-    color: var(--accent-color); /* Gunakan warna accent untuk nama */
-    text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent-color); /* Gunakan warna accent untuk nama */
+  text-transform: uppercase;
 }
 
 /* Tombol Main Lagi yang lebih mencolok */
@@ -711,7 +729,7 @@ p {
 }
 
 .btn-shine::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
@@ -741,14 +759,14 @@ p {
 
 .confetti-effect::before,
 .confetti-effect::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100px; /* Ukuran area confetti */
   height: 100px;
   background: radial-gradient(circle, #f0f0f0 10%, transparent 10%) 0 0,
-              radial-gradient(circle, #ff715b 10%, transparent 10%) 20px 20px,
-              radial-gradient(circle, #7bd389 10%, transparent 10%) 40px 40px,
-              radial-gradient(circle, #4da8da 10%, transparent 10%) 60px 60px;
+    radial-gradient(circle, #ff715b 10%, transparent 10%) 20px 20px,
+    radial-gradient(circle, #7bd389 10%, transparent 10%) 40px 40px,
+    radial-gradient(circle, #4da8da 10%, transparent 10%) 60px 60px;
   background-size: 80px 80px; /* Jarak antar titik confetti */
   top: -10%; /* Mulai dari atas */
   opacity: 0.7;
@@ -766,9 +784,7 @@ p {
   transform: rotate(180deg);
 }
 
-
 /* KEYFRAMES ANIMASI */
-
 @keyframes bounce {
   0% {
     transform: translateY(0);
@@ -777,7 +793,6 @@ p {
     transform: translateY(-10px);
   }
 }
-
 @keyframes glow {
   0% {
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), 0 0 10px #ffcc00;
@@ -786,7 +801,6 @@ p {
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), 0 0 30px #ffe680;
   }
 }
-
 @keyframes confetti-drop {
   0% {
     transform: translateY(-100%) rotate(0deg);
@@ -794,21 +808,21 @@ p {
   }
   100% {
     transform: translateY(100%) rotate(360deg);
-    opacity: 0.0;
+    opacity: 0;
   }
 }
 
 /* MEDIA QUERY untuk memastikan tampilan yang baik pada layar kecil */
 @media (max-width: 600px) {
-    .winner-title {
-        font-size: 48px;
-    }
-    .winner-trophy {
-        font-size: 80px;
-    }
-    .winner-subtitle {
-        font-size: 18px;
-    }
+  .winner-title {
+    font-size: 48px;
+  }
+  .winner-trophy {
+    font-size: 80px;
+  }
+  .winner-subtitle {
+    font-size: 18px;
+  }
 }
 
 /* ===== STYLE HALAMAN SETTINGS (BACKGROUND THEME) ===== */
@@ -826,7 +840,7 @@ p {
 .color-free {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-end; /* Diubah di bawah */
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -881,43 +895,28 @@ p {
   cursor: pointer;
   outline: none;
   transition: transform 0.25s ease;
-}
-#bg-color-picker:hover {
-  transform: scale(1.1);
+  margin-top: 0; /* PERUBAHAN: Menghapus margin atas */
 }
 
 /* ===== FIX: Tombol BG2 dan BG3 tidak muncul ===== */
 
-/* Pastikan setiap setting-item yang berisi tombol tampil dalam kolom (bukan baris) */
+/* Default setting-item: tumpuk ke bawah */
 #settings-modal .setting-item {
-  flex-direction: column !important;
-  align-items: flex-start !important;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 /* Khusus bagian pilihan background */
 #settings-modal .setting-item .color-free {
   width: 100%;
-  justify-content: flex-end;
+  justify-content: center;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
 /* Tambahkan margin biar rapi antar baris */
 #settings-modal .setting-item + .setting-item {
   margin-top: 10px;
-}
-
-
-/* Buka batas tinggi modal agar semua konten kelihatan */
-#settings-modal .modal-content {
-  overflow-y: visible !important;
-  height: auto !important;
-  max-height: none !important;
-}
-
-/* Pastikan container tidak menyembunyikan tombol */
-#settings-modal .settings-container {
-  overflow: visible !important;
-  flex-wrap: wrap !important;
 }
 
 /* Tombol BG2 & BG3 tampil jelas */
@@ -932,6 +931,71 @@ p {
   border-radius: 8px !important;
   padding: 10px 16px !important;
   margin-top: 8px !important;
+}
+
+/* ================================================== */
+/* ===== PERUBAHAN BARU (TAMBAHKAN/UBAH STYLE DI BAWAH INI) ===== */
+/* ================================================== */
+
+/* Style untuk item baris (Suara, Volume, Custom Background) */
+.setting-item-row {
+  flex-direction: row !important; /* Override style kolom */
+  justify-content: space-between;
+  align-items: center;
+}
+.setting-item-row label {
+  margin-bottom: 0 !important; /* Hapus margin bawah dari label */
+}
+
+/* Grup untuk picker warna custom dan tombolnya */
+.color-custom-pair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* PERUBAHAN: Aturan baru untuk menyamakan tinggi tombol "Terapkan" */
+.color-custom-pair #bg-apply-btn {
+  width: auto;
+  height: 36px; /* Samakan tinggi dengan #bg-color-picker */
+  padding: 0 14px; /* Atur padding horizontal */
+  margin-top: 0; /* Hapus margin atas dari class .btn */
+  font-size: 14px;
+}
+
+/* Penampung untuk grup warna X dan O */
+.color-settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 25px;
+}
+
+/* Grup individu (Label + Kotak Warna) */
+.color-picker-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Label di dalam grup (Warna X:, Warna O:) */
+.color-picker-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ddd;
+  margin-bottom: 0 !important; /* Override .setting-item label */
+}
+
+/* Kotak input warna di dalam grup */
+.color-picker-group input[type="color"] {
+  width: 40px;
+  height: 30px;
+  border: none;
+  padding: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: transparent;
 }
 
 /* =================== HALAMAN SETTINGS =================== */
@@ -953,7 +1017,7 @@ p {
   gap: 20px;
   align-items: center;
   width: 350px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* Judul Settings */
@@ -962,7 +1026,7 @@ p {
   font-weight: 700;
   color: #ffffff;
   margin-bottom: 10px;
-  text-shadow: 0 0 10px rgba(0,0,0,0.5);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Label dan input */
@@ -988,7 +1052,7 @@ p {
   border: none;
   padding: 8px;
   font-size: 14px;
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba(255, 255, 255, 0.2);
   color: white;
   outline: none;
 }
@@ -996,7 +1060,7 @@ p {
 .settings-item select:hover,
 .settings-item input[type="range"]:hover,
 .settings-item input[type="checkbox"]:hover {
-  background-color: rgba(255,255,255,0.3);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Tombol kembali ke menu */

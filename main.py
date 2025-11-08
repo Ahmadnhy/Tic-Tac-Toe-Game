@@ -1,9 +1,12 @@
 import webview
 import os
+import warnings
 
 # PERBAIKAN: Sembunyikan pesan 'hello' pygame
 # Ini HARUS dijalankan SEBELUM 'game_logic' (yang mengimpor pygame) diimpor
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "1"
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # Mengimpor dari game_logic.py
 from game_logic import Api  
