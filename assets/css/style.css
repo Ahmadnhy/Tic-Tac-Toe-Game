@@ -93,7 +93,6 @@ body {
 .content-frame {
   width: 100%;
   max-width: 400px;
-  /* margin-top: 20px; <-- DIHAPUS untuk keseimbangan yang lebih baik */
 }
 
 /* Judul dan Teks */
@@ -106,19 +105,14 @@ h1 {
 
 /* Style untuk judul utama yang miring (default) */
 .main-title {
-  font-size: 48px;
+  font-size: 90px;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 25px;
+  margin-top: -20px;
+  margin-bottom: 50px;
   transform: rotate(-7deg);
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 1;
-}
-
-/* Judul lebih besar lagi */
-.main-title.large {
-  font-size: 90px;
-  margin-bottom: 35px;
 }
 
 h2 {
@@ -184,7 +178,7 @@ p {
   width: 100%;
   max-width: 300px;
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 .btn:active {
   transform: scale(0.98);
@@ -201,10 +195,15 @@ p {
 /* Tombol sekunder (Tombol Home) menjadi PUTIH */
 .btn-secondary {
   background-color: #ffffff;
-  color: #333;
+  color: #000000;
 }
 .btn-secondary:hover {
   background-color: #e0e0e0;
+}
+
+.btn-cb {
+  background-color: #ffffff;
+  color: #000000;
 }
 
 /* ================================== */
@@ -249,12 +248,13 @@ p {
 }
 
 .score-box {
-  background-color: rgba(236, 236, 236, 0.85); /* Putih gading transparan */
-  color: #333; /* Teks gelap */
-  padding: 20px;
+  background-color: rgb(255, 255, 255); /* Putih gading transparan */
+  color: #000000; /* Teks gelap */
+  padding: 25px;
   border-radius: 25px;
   text-align: center;
-  width: 200px;
+  width: 150px;
+  padding-top: 40px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -267,7 +267,7 @@ p {
 .score-box h1 {
   font-size: 48px;
   font-weight: 700;
-  color: #333;
+  color: #000000;
   margin: 10px 0 0 0;
 }
 
@@ -281,14 +281,30 @@ p {
   gap: 20px; /* Jarak antara bar atas, papan, dan bar bawah */
 }
 
-/* Bar Tombol Atas & Bawah */
-.game-top-bar,
-.game-bottom-bar {
+/* Bar Tombol Atas */
+.game-top-bar {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px; /* Jarak antar tombol */
-  width: 100%;
+  gap: 20px; /* Jarak antar tombol */
+  width: 400px; /* Lebar otomatis */
+  margin: 0 auto; /* Menengahkan grup */
+
+  /* Style untuk container "pil" */
+  background-color: #ffffff;
+  border-radius: 50px; /* Membuat bentuk pil */
+  padding: 10px; /* Padding di dalam pil */
+  margin-bottom: 45px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.game-bottom-bar {
+  /* Tombol "Back to Home" */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  width: 170px;
 }
 
 /* Style Tombol Baru di Game Page */
@@ -296,27 +312,39 @@ p {
   font-family: "Poppins", sans-serif;
   font-size: 14px;
   font-weight: 600;
-  padding: 10px 20px;
-  border-radius: 20px;
+  padding: 8px 18px; /* Padding tombol */
+  border-radius: 30px; /* Tombol juga bulat */
   border: none;
   cursor: pointer;
-  background-color: #ffffff; /* Putih */
-  color: #333; /* Teks gelap */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.2s, transform 0.1s;
 
-  /* Hapus width 100% dari .btn agar tombol tidak memanjang */
-  width: auto;
-  max-width: none;
+  /* Tombol transparan di dalam 'pil' */
+  background-color: transparent;
+  color: #000000; /* Teks gelap */
+  box-shadow: none; /* Hapus shadow per tombol */
+
+  transition: background-color 0.2s, transform 0.1s;
   margin-top: 0;
 }
 
 .btn-game-bar:hover {
-  background-color: #e0e0e0;
+  /* Efek hover baru (highlight) */
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .btn-game-bar:active {
   transform: scale(0.95);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Khusus Tombol "Back To Home" di bar bawah agar tetap terlihat */
+.game-bottom-bar .btn-game-bar {
+  background-color: #ffffff;
+  color: #000000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.game-bottom-bar .btn-game-bar:hover {
+  background-color: #e0e0e0;
 }
 
 /* ================================== */
@@ -334,8 +362,8 @@ p {
   display: block; /* Bukan grid */
 
   /* Ukuran HARUS sesuai dengan konstanta JS (300 + 4*2 = 308) */
-  width: 308px;
-  height: 308px;
+  width: 387px;
+  height: 387px;
 
   /* Hapus margin agar layout center-column yg mengatur */
   margin-left: 0;
@@ -462,7 +490,7 @@ p {
 #settings-modal .modal-content {
   max-width: 500px;
   text-align: left;
-  max-height: 70vh; /* Ditinggikan */
+  max-height: 70vh; /* Tinggi modal 70% layar */
   display: flex;
   flex-direction: column;
 }
@@ -481,7 +509,7 @@ p {
   margin-top: 30px;
   padding: 0 10px;
   overflow-y: auto; /* Scroll aktif */
-  padding-right: 10px;
+  padding-right: 10px; /* Padding untuk ruang scroll */
 
   /* Menyembunyikan scrollbar */
   scrollbar-width: none; /* Firefox */
@@ -895,7 +923,7 @@ p {
   cursor: pointer;
   outline: none;
   transition: transform 0.25s ease;
-  margin-top: 0; /* PERUBAHAN: Menghapus margin atas */
+  margin-top: 0;
 }
 
 /* ===== FIX: Tombol BG2 dan BG3 tidak muncul ===== */
@@ -954,7 +982,7 @@ p {
   gap: 8px;
 }
 
-/* PERUBAHAN: Aturan baru untuk menyamakan tinggi tombol "Terapkan" */
+/* Menyamakan tinggi tombol "Terapkan" dengan color picker */
 .color-custom-pair #bg-apply-btn {
   width: auto;
   height: 36px; /* Samakan tinggi dengan #bg-color-picker */

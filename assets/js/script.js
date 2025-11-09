@@ -19,8 +19,8 @@ window.addEventListener("pywebviewready", () => {
   }
   const ctx = canvas.getContext("2d");
 
-  const CELL_SIZE = 100;
-  const LINE_WIDTH = 4; // Lebar garis 4px
+  const CELL_SIZE = 125;
+  const LINE_WIDTH = 6; // Lebar garis 4px
   const BOARD_SIZE = CELL_SIZE * 3 + LINE_WIDTH * 2; // 308
 
   canvas.width = BOARD_SIZE;
