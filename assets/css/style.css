@@ -1123,6 +1123,8 @@ p {
   padding: 0 14px; /* Atur padding horizontal */
   margin-top: 0; /* Hapus margin atas dari class .btn */
   font-size: 14px;
+  background-color: white;
+  color: black;
 }
 
 /* Penampung untuk grup warna X dan O */

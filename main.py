@@ -46,4 +46,4 @@ if __name__ == "__main__":
 
     # 4. Mulai aplikasi
     # Menambahkan 'debug=True' membantu saat pengembangan.
-    webview.start(debug=True, private_mode=False)
+    webview.start(private_mode=False)
