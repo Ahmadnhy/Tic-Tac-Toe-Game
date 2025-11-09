@@ -115,6 +115,17 @@ h1 {
   z-index: 1;
 }
 
+.start-title {
+  font-size: 90px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: -20px;
+  margin-bottom: 25px;
+  transform: rotate(-7deg);
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
 h2 {
   font-size: 16px;
   font-weight: 600;
@@ -294,7 +305,7 @@ p {
   background-color: #ffffff;
   border-radius: 50px; /* Membuat bentuk pil */
   padding: 10px; /* Padding di dalam pil */
-  margin-bottom: 45px;
+  margin-bottom: 35px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -303,7 +314,7 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
+  margin-top: 10px;
   width: 170px;
 }
 
@@ -376,8 +387,6 @@ p {
   color: #e63946;
   font-size: 12px;
   font-weight: 600;
-  height: 15px;
-  margin-top: 15px;
 }
 
 /* ================================== */
@@ -1104,4 +1113,17 @@ p {
 
 #settings-page .btn-back:hover {
   background-color: #e0e0e0;
+}
+
+/* ================================== */
+/* ===== STYLE LABEL GILIRAN (TAMBAHAN) ===== */
+/* ================================== */
+
+#label-status {
+  color: #ffffff;
+  font-size: 18px; /* Sedikit lebih besar agar jelas */
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  margin: 0; /* Hapus margin default dari h2 */
+  padding: 0;
 }

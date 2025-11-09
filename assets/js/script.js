@@ -246,11 +246,14 @@ window.addEventListener("pywebviewready", () => {
         playerNames = await window.pywebview.api.get_player_names();
       }
       if (labelStatus)
-        labelStatus.textContent = `Giliran: ${playerNames[player]} (${player})`;
+        // ⬇️ PERUBAHAN DI SINI
+        labelStatus.textContent = `Turn: ${playerNames[player]} (${player})`;
     } catch (e) {
       console.error("Gagal mendapatkan nama pemain:", e);
       const name = player === "X" ? "Player 1" : "Player 2";
-      if (labelStatus) labelStatus.textContent = `Giliran: ${name} (${player})`;
+      if (labelStatus)
+        // ⬇️ PERUBAHAN DI SINI
+        labelStatus.textContent = `Turn: ${name} (${player})`;
     }
   };
 
@@ -580,19 +583,25 @@ window.addEventListener("pywebviewready", () => {
 
       if (player1Score > player2Score) {
         playPySound("win");
-        if (labelTitle) labelTitle.textContent = "PEMENANG AKHIR";
+        // ⬇️ PERUBAHAN DI SINI
+        if (labelTitle) labelTitle.textContent = "FINAL WINNER";
         if (labelSubtitle)
-          labelSubtitle.textContent = `${p1Name} (X) - Skor: ${player1Score}`;
+          // ⬇️ PERUBAHAN DI SINI
+          labelSubtitle.textContent = `${p1Name} (X) With Score: ${player1Score}`;
       } else if (player2Score > player1Score) {
         playPySound("win");
-        if (labelTitle) labelTitle.textContent = "PEMENANG AKHIR";
+        // ⬇️ PERUBAHAN DI SINI
+        if (labelTitle) labelTitle.textContent = "FINAL WINNER";
         if (labelSubtitle)
-          labelSubtitle.textContent = `${p2Name} (O) - Skor: ${player2Score}`;
+          // ⬇️ PERUBAHAN DI SINI
+          labelSubtitle.textContent = `${p2Name} (O) With Score: ${player2Score}`;
       } else {
         playPySound("draw");
-        if (labelTitle) labelTitle.textContent = "PERMAINAN SERI";
+        // ⬇️ PERUBAHAN DI SINI
+        if (labelTitle) labelTitle.textContent = "GAME IS A DRAW";
         if (labelSubtitle)
-          labelSubtitle.textContent = `Skor Akhir: ${p1Name} (${player1Score}) - ${p2Name} (${player2Score})`;
+          // ⬇️ PERUBAHAN DI SINI
+          labelSubtitle.textContent = `Final Score: ${p1Name} (${player1Score}) - ${p2Name} (${player2Score})`;
       }
       if (typeof window.showPage === "function") window.showPage("end-page");
     });

@@ -18,7 +18,7 @@
       <h1 class="main-title">Tic Tac Toe</h1>
       <div class="content-frame">
         <button id="main-menu-start-btn" class="btn btn-secondary">
-          Start Game
+          Play Game
         </button>
         <button id="main-menu-settings-btn" class="btn btn-secondary">
           Settings
@@ -31,7 +31,7 @@
     </div>
 
     <div id="home-page" class="page-container">
-      <h1 class="main-title large">Start Game</h1>
+      <h1 class="start-title">Start Game</h1>
       <div class="content-frame">
         <div class="form-inputs">
           <div class="input-group">
@@ -39,7 +39,7 @@
             <input
               type="text"
               id="player1"
-              placeholder="Masukkan Nama Player 1"
+              placeholder="Enter Player 1's name"
             />
           </div>
           <div class="input-group">
@@ -47,17 +47,17 @@
             <input
               type="text"
               id="player2"
-              placeholder="Masukkan Nama Player 2"
+              placeholder="Enter Player 2's name"
             />
           </div>
         </div>
 
+        <p id="home-error" class="error-message"></p>
         <button id="start-game-btn" class="btn btn-primary btn-shine">
           Start Game 🎮
         </button>
-        <p id="home-error" class="error-message"></p>
         <button id="back-to-main-menu-btn" class="btn btn-secondary">
-          Kembali ke Main Menu
+          Back To Main Menu
         </button>
       </div>
     </div>
@@ -83,9 +83,9 @@
             </button>
           </div>
 
-          <h2 id="label-status" style="display: none">Giliran: Player (X)</h2>
-
           <canvas id="tic-tac-toe-board" width="308" height="308"></canvas>
+
+          <h2 id="label-status">Player's Turn (X)</h2>
 
           <div class="game-bottom-bar">
             <button id="back-to-home-btn" class="btn btn-game-bar">
@@ -110,17 +110,17 @@
           <i class="fas fa-trophy winner-trophy"></i>
         </div>
 
-        <h1 id="label-title" class="winner-title">CONGRATULATIONS!</h1>
+        <h1 id="label-title" class="winner-title">CONGRATULATIONSS</h1>
         <p id="label-subtitle" class="winner-subtitle">
-          Pemenangnya Adalah:
-          <span id="winner-name-placeholder">Nama Player (X)</span>
+          The Winner Is:
+          <span id="winner-name-placeholder">Player Name (X)</span>
         </p>
 
         <button id="play-again-btn" class="btn btn-primary btn-shine">
-          Main Lagi 🎮
+          Play Again 🎮
         </button>
         <button id="back-to-home-btn-2" class="btn btn-secondary">
-          Kembali ke Home
+          Back To Home
         </button>
       </div>
       <div class="confetti-effect"></div>
@@ -133,7 +133,7 @@
 
         <div class="settings-container">
           <div class="setting-item setting-item-row">
-            <label for="sound-toggle">Suara</label>
+            <label for="sound-toggle">Sound</label>
             <div class="toggle-switch">
               <input type="checkbox" id="sound-toggle" checked />
               <label class="slider round" for="sound-toggle"></label>
@@ -165,12 +165,12 @@
                 value="#0b1020"
                 title="Pilih warna custom"
               />
-              <button id="bg-apply-btn" class="btn btn-cb">Terapkan</button>
+              <button id="bg-apply-btn" class="btn btn-cb">Apply</button>
             </div>
           </div>
 
           <div class="setting-item">
-            <label>Tema Background</label>
+            <label>Background Theme</label>
             <div class="color-free">
               <button
                 class="btn btn-secondary bg-img-btn"
@@ -194,14 +194,14 @@
           </div>
 
           <div class="setting-item">
-            <label>Pilih Warna X dan O</label>
+            <label>Choose Color X and O</label>
             <div class="color-settings">
               <div class="color-picker-group">
-                <label for="x-color-picker">Warna X:</label>
+                <label for="x-color-picker">Color X:</label>
                 <input type="color" id="x-color-picker" value="#E63946" />
               </div>
               <div class="color-picker-group">
-                <label for="o-color-picker">Warna O:</label>
+                <label for="o-color-picker">Color O:</label>
                 <input type="color" id="o-color-picker" value="#007BFF" />
               </div>
             </div>
