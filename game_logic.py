@@ -1,34 +1,51 @@
 import pygame
 import os
 from home_logic import HomeController
-# Mengimpor dari play_game_logic.py sesuai permintaan Anda
 from play_game_logic import GameController 
+
+# Inisialisasi mixer di sini, di luar kelas.
+try:
+    pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+except pygame.error as e:
+    print(f"Peringatan: Gagal menginisialisasi pygame.mixer: {e}. Suara tidak akan berfungsi.")
 
 class Api:
     """
-    File ini sebelumnya bernama api.py.
-    Kelas ini diekspos ke JavaScript.
-    Kelas ini bertindak sebagai "facade" atau jembatan,
-    meneruskan panggilan ke controller yang tepat.
+    Kelas ini diekspos ke JavaScript dan bertindak sebagai jembatan
+    ke controller yang tepat (Home atau Game).
     """
     def __init__(self, sound_dir):
         self.player1_name = ""
         self.player2_name = ""
         self.window = None
+        
+        # --- PERBAIKAN: Menggunakan Dictionary dan file .wav ---
+        self.sounds = {}
+        self.volume = 0.5  # Volume default (0.0 hingga 1.0)
 
-        # --- Inisialisasi Suara ---
-        # 'contextlib' dihapus. os.environ di main.py akan menangani ini.
-        pygame.mixer.init()
+        # Daftar semua file suara yang ingin dimuat
+        sound_files = {
+            'click': 'click.wav',  # PASTIKAN Anda punya file click.wav
+            'win': 'win.wav',
+            'draw': 'draw.wav',
+            'score': 'score.wav'
+        }
 
         try:
-            # Path suara sudah benar karena dikirim dari main.py
-            self.sound_click = pygame.mixer.Sound(os.path.join(sound_dir, "click.mp3"))
-            self.sound_win = pygame.mixer.Sound(os.path.join(sound_dir, "win.mp3"))
-            self.sound_draw = pygame.mixer.Sound(os.path.join(sound_dir, "draw.mp3"))
+            for name, file in sound_files.items():
+                path = os.path.join(sound_dir, file)
+                if os.path.exists(path):
+                    self.sounds[name] = pygame.mixer.Sound(path)
+                else:
+                    # Pesan ini penting untuk debugging jika ada file yang hilang
+                    print(f"Peringatan PENTING: File suara tidak ditemukan: {path}")
         
         except pygame.error as e:
-            # Biarkan pesan error ini, penting untuk debugging
             print(f"Error memuat file suara: {e}. Pastikan folder 'assets/sounds' ada.")
+
+        # Terapkan volume default ke semua suara yang berhasil dimuat
+        self.set_volume(self.volume)
+        # --------------------------------------------------
 
         # --- Inisialisasi Controllers ---
         self.home_controller = HomeController(self)
@@ -39,7 +56,6 @@ class Api:
         self.window = window
 
     # --- Fungsi yang Dipanggil dari JavaScript ---
-    # Fungsi-fungsi ini adalah API yang diekspos ke 'window.pywebview.api'
     
     def start_game(self, name1, name2):
         """Dipanggil oleh JS (tombol 'Mulai Permainan')."""
@@ -47,7 +63,7 @@ class Api:
 
     def cell_clicked(self, index):
         """Dipanggil oleh JS saat sel di papan diklik."""
-        self.game_controller.cell_clicked(index)
+        self.game_controller.cell_clicked(index) # Teruskan ke logika game
 
     def reset_board_from_js(self):
         """Dipanggil oleh JS (tombol 'Main Lagi' atau 'Reset')."""
@@ -59,7 +75,6 @@ class Api:
         
     def get_player_names(self):
         """Dipanggil oleh JS untuk mendapatkan nama pemain."""
-        # Memberi nama default jika kosong
         name1 = self.player1_name if self.player1_name else "Player 1"
         name2 = self.player2_name if self.player2_name else "Player 2"
         return {"X": name1, "O": name2}
@@ -67,37 +82,40 @@ class Api:
     def set_volume(self, volume):
         """Dipanggil oleh JS untuk mengatur volume semua suara."""
         try:
-            # Pastikan volume adalah float antara 0.0 dan 1.0
             vol = float(volume)
-            if 0.0 <= vol <= 1.0:
-                # Atur volume untuk setiap suara yang ada
-                if hasattr(self, 'sound_click'):
-                    self.sound_click.set_volume(vol)
-                if hasattr(self, 'sound_win'):
-                    self.sound_win.set_volume(vol)
-                if hasattr(self, 'sound_draw'):
-                    self.sound_draw.set_volume(vol)
-        except (ValueError, TypeError):
-            # Abaikan jika nilai yang dikirim dari JS tidak valid
+            if vol < 0.0: vol = 0.0
+            if vol > 1.0: vol = 1.0
+            
+            self.volume = vol  # Simpan nilai volume
+            
+            for sound in self.sounds.values():
+                sound.set_volume(self.volume)
+                
+        except (ValueError, TypeError) as e:
+            print(f"Error nilai volume tidak valid: {volume}, Error: {e}")
             pass
 
-    # --- TAMBAHAN BARU UNTUK TOMBOL EXIT ---
+    # --- FUNGSI BARU YANG DIPANGGIL OLEH SCRIPT.JS ---
+    def play_sound(self, sound_name):
+        """Memutar suara dari dictionary berdasarkan nama."""
+        if sound_name in self.sounds:
+            try:
+                self.sounds[sound_name].set_volume(self.volume)
+                self.sounds[sound_name].play()
+            except Exception as e:
+                print(f"Error memutar suara {sound_name}: {e}")
+        else:
+            print(f"Peringatan: Suara tidak ditemukan: {sound_name}")
+    # ----------------------------------------------
+
     def exit_game(self):
         """Dipanggil dari JavaScript (tombol 'Exit') untuk menutup aplikasi."""
-        # print("Menerima perintah keluar dari JavaScript...")
         if self.window:
-            # Hancurkan jendela. Ini akan menutup aplikasi
-            # dan memicu event 'closed' di main.py, 
-            # yang kemudian akan memanggil self.shutdown()
             self.window.destroy()
-    # ----------------------------------------
 
-    # Tambahkan fungsi shutdown
     def shutdown(self):
         """Dipanggil dari main.py saat window ditutup."""
-        # print("Menjalankan shutdown pygame...")
-        # Hentikan semua modul pygame
+        print("Menjalankan shutdown pygame...")
         pygame.mixer.quit()
         pygame.quit()
-        # Hapus referensi ke window untuk mencegah error 'ObjectDisposed'
         self.window = None
