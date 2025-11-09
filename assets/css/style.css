@@ -723,12 +723,60 @@ p {
   -webkit-backdrop-filter: blur(5px);
 }
 
+/* ================================== */
+/* === AWAL PERUBAHAN ANIMASI === */
+/* ================================== */
+
+/* 1. Sembunyikan elemen DAN posisikan di tengah layar (pop-up)
+     SEBELUM animasi dimulai.
+*/
+#end-page .trophy-icon-container {
+  opacity: 0;
+  /* Paksa piala untuk mulai di tengah layar (50vh) dan membesar */
+  transform: translateY(20vh) scale(0.5);
+}
+#end-page .winner-title {
+  opacity: 0;
+  /* Paksa judul untuk mulai sedikit di bawah tengah layar */
+  transform: translateY(15vh) scale(0.5);
+}
+#end-page .winner-subtitle {
+  opacity: 0;
+  /* Paksa subjudul untuk mulai sedikit di bawah tengah layar */
+  transform: translateY(10vh) scale(0.5);
+}
+#end-page .btn {
+  opacity: 0;
+}
+
+/* 2. Terapkan animasi saat halaman aktif */
+#end-page.active .trophy-icon-container {
+  /* Total 4s: 0.5s pop, 3s hold, 0.5s move */
+  animation: popUpFromCenterAndSettle 4s ease-in-out 0.2s forwards;
+}
+#end-page.active .winner-title {
+  animation: popUpFromCenterAndSettle_Title 4s ease-in-out 0.4s forwards;
+}
+#end-page.active .winner-subtitle {
+  animation: popUpFromCenterAndSettle_Subtitle 4s ease-in-out 0.6s forwards;
+}
+
+/* Tombol muncul belakangan SETELAH animasi piala selesai */
+#end-page.active .btn {
+  /* Muncul setelah item terakhir selesai (0.6s delay + 4s durasi) */
+  animation: fade-in-up 0.5s ease 4.5s forwards;
+}
+
+/* ================================== */
+/* === AKHIR PERUBAHAN ANIMASI === */
+/* ================================== */
+
 .trophy-icon-container {
   margin-bottom: 20px;
 }
 
 .winner-trophy {
-  font-size: 100px;
+  font-size: 120px; /* <-- Piala diperbesar */
   color: gold; /* Warna Emas untuk Piala */
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 140, 0, 0.5);
   animation: bounce 1s infinite alternate; /* Animasi Piala */
@@ -738,7 +786,6 @@ p {
   font-size: 60px;
   font-weight: 800;
   color: gold;
-  margin-bottom: 15px;
   text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5), 0 0 20px #ffcc00;
   animation: glow 1.5s infinite alternate; /* Animasi Kilauan Teks */
 }
@@ -747,7 +794,6 @@ p {
   font-size: 24px;
   font-weight: 600;
   color: var(--text-light);
-  margin-bottom: 30px;
   /* Membuat nama pemenang lebih menonjol */
 }
 #end-page .winner-subtitle #winner-name-placeholder {
@@ -846,6 +892,85 @@ p {
   100% {
     transform: translateY(100%) rotate(360deg);
     opacity: 0;
+  }
+}
+
+/* ================================== */
+/* === KEYFRAME BARU (PERBAIKAN) === */
+/* ================================== */
+
+/* Animasi untuk PIALA (Bergerak 20vh) */
+@keyframes popUpFromCenterAndSettle {
+  0% {
+    transform: translateY(10vh) scale(0.5);
+    opacity: 0;
+  }
+  /* 1. Pop-in besar di tengah layar (0.5s) */
+  12.5% {
+    transform: translateY(10vh) scale(1.2);
+    opacity: 1;
+  }
+  /* 2. Hold di tengah layar (3s) */
+  87.5% {
+    transform: translateY(10vh) scale(1.2);
+    opacity: 1;
+  }
+  /* 3. Kembali ke posisi 'semula' (atas) & ukuran normal (0.5s) */
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animasi untuk JUDUL (Bergerak 15vh) */
+@keyframes popUpFromCenterAndSettle_Title {
+  0% {
+    transform: translateY(15vh) scale(0.5);
+    opacity: 0;
+  }
+  12.5% {
+    transform: translateY(15vh) scale(1.2);
+    opacity: 1;
+  }
+  87.5% {
+    transform: translateY(15vh) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animasi untuk SUBJUDUL (Bergerak 10vh) */
+@keyframes popUpFromCenterAndSettle_Subtitle {
+  0% {
+    transform: translateY(20vh) scale(0.5);
+    opacity: 0;
+  }
+  12.5% {
+    transform: translateY(20vh) scale(1.2);
+    opacity: 1;
+  }
+  87.5% {
+    transform: translateY(20vh) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* === KEYFRAME UNTUK TOMBOL (Tidak berubah) === */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
