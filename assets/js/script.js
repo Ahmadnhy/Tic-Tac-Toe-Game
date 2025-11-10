@@ -24,82 +24,68 @@ window.addEventListener("pywebviewready", () => {
   const BOARD_SIZE = CELL_SIZE * 3 + LINE_WIDTH * 2; // 308
 
   canvas.width = BOARD_SIZE;
-  canvas.height = BOARD_SIZE;
+  canvas.height = BOARD_SIZE; // WARNA: gunakan let supaya bisa diubah runtime
 
-  // WARNA: gunakan let supaya bisa diubah runtime
   let COLOR_X = "#E63946"; // default X
   let COLOR_O = "#007BFF"; // default O
   let COLOR_WIN_LINE = "rgba(0, 0, 0, 0.4)"; // garis pemenang
-  let COLOR_GRID = "rgba(255,255,255,0.06)"; // warna kotak putih tipis
+  let COLOR_GRID = "rgba(255,255,255,0.06)"; // warna kotak putih tipis // default player names (akan di-overwrite dari Python)
 
-  // default player names (akan di-overwrite dari Python)
-  let playerNames = { X: "Player 1", O: "Player 2" };
+  let playerNames = { X: "Player 1", O: "Player 2" }; // skor JS (dipakai di UI)
 
-  // skor JS (dipakai di UI)
   let player1Score = 0;
-  let player2Score = 0;
+  let player2Score = 0; // ================================================================== // Referensi Elemen DOM // ==================================================================
 
-  // ==================================================================
-  // Referensi Elemen DOM
-  // ==================================================================
   const pages = {
     mainMenu: document.getElementById("main-menu-page"),
     home: document.getElementById("home-page"),
     game: document.getElementById("game-page"),
     end: document.getElementById("end-page"),
-  };
+  }; // Main menu buttons
 
-  // Main menu buttons
   const btnMainMenuStart = document.getElementById("main-menu-start-btn");
   const btnMainMenuSettings = document.getElementById("main-menu-settings-btn");
   const btnMainMenuCredits = document.getElementById("main-menu-credits-btn");
-  const btnMainMenuExit = document.getElementById("main-menu-exit-btn");
+  const btnMainMenuExit = document.getElementById("main-menu-exit-btn"); // Home (player name)
 
-  // Home (player name)
   const btnStartGame = document.getElementById("start-game-btn");
   const inputPlayer1 = document.getElementById("player1");
   const inputPlayer2 = document.getElementById("player2");
   const homeError = document.getElementById("home-error");
-  const btnBackToMainMenu = document.getElementById("back-to-main-menu-btn");
+  const btnBackToMainMenu = document.getElementById("back-to-main-menu-btn"); // Game page elements
 
-  // Game page elements
   const player1ScoreEl = document.getElementById("player1-score");
   const player2ScoreEl = document.getElementById("player2-score");
+  // PENYESUAIAN: Tambahkan dua baris ini
+  const player1NameLabel = document.getElementById("player1-name-label");
+  const player2NameLabel = document.getElementById("player2-name-label");
   const labelStatus = document.getElementById("label-status");
   const btnResetGame = document.getElementById("reset-game-btn");
   const btnBackToHome = document.getElementById("back-to-home-btn");
   const btnGameSettings = document.getElementById("game-settings-btn");
   const btnFinishGame = document.getElementById("finish-game-btn");
-  const btnNewGame = document.getElementById("new-game-btn"); // optional
+  const btnNewGame = document.getElementById("new-game-btn"); // optional // End page
 
-  // End page
   const labelTitle = document.getElementById("label-title");
   const labelSubtitle = document.getElementById("label-subtitle");
   const btnPlayAgain = document.getElementById("play-again-btn");
-  const btnBackToHome2 = document.getElementById("back-to-home-btn-2");
+  const btnBackToHome2 = document.getElementById("back-to-home-btn-2"); // Modals
 
-  // Modals
   const creditsModal = document.getElementById("credits-modal");
   const modalCloseBtn = document.getElementById("modal-close");
   const settingsModal = document.getElementById("settings-modal");
-  const settingsModalClose = document.getElementById("settings-modal-close");
+  const settingsModalClose = document.getElementById("settings-modal-close"); // Audio controls
 
-  // Audio controls
   const soundToggle = document.getElementById("sound-toggle");
-  const volumeSlider = document.getElementById("volume-slider");
+  const volumeSlider = document.getElementById("volume-slider"); // PERBAIKAN: Memuat suara klik di JavaScript
 
-  // PERBAIKAN: Memuat suara klik di JavaScript
-  const soundClick = new Audio("assets/sounds/click.wav");
+  const soundClick = new Audio("assets/sounds/click.wav"); // Color pickers (X/O) and background controls (may be null if HTML belum punya)
 
-  // Color pickers (X/O) and background controls (may be null if HTML belum punya)
   const xColorPicker = document.getElementById("x-color-picker");
   const oColorPicker = document.getElementById("o-color-picker");
   const bgColorPicker = document.getElementById("bg-color-picker");
-  const bgApplyBtn = document.getElementById("bg-apply-btn");
+  const bgApplyBtn = document.getElementById("bg-apply-btn"); // ================================================================== // Helper untuk memutar suara dari Python (win, draw, score) // ==================================================================
 
-  // ==================================================================
-  // Helper untuk memutar suara dari Python (win, draw, score)
-  // ==================================================================
   function playPySound(soundName) {
     if (
       window.pywebview &&
@@ -114,11 +100,8 @@ window.addEventListener("pywebviewready", () => {
     } else {
       console.log(`Fallback: Memainkan suara ${soundName}`);
     }
-  }
+  } // ================================================================== // Helper: baca CSS vars bila kamu pakai :root vars // ==================================================================
 
-  // ==================================================================
-  // Helper: baca CSS vars bila kamu pakai :root vars
-  // ==================================================================
   function readCssVar(name) {
     try {
       return getComputedStyle(document.documentElement)
@@ -141,9 +124,8 @@ window.addEventListener("pywebviewready", () => {
     } catch (e) {
       /* ignore */
     }
-  }
+  } // attach quick theme circles (jika ada .color-circle di DOM)
 
-  // attach quick theme circles (jika ada .color-circle di DOM)
   (function attachColorCircles() {
     const circles = document.querySelectorAll(".color-circle");
     if (!circles || circles.length === 0) return;
@@ -196,8 +178,7 @@ window.addEventListener("pywebviewready", () => {
         c.classList.add("active");
         updateColorsFromCss();
       });
-    });
-    // apply saved theme if exists
+    }); // apply saved theme if exists
     try {
       const saved = localStorage.getItem("tic_theme");
       if (saved) {
@@ -205,14 +186,10 @@ window.addEventListener("pywebviewready", () => {
         if (el) el.classList.add("active");
       }
     } catch (e) {}
-  })();
+  })(); // Apply initial colors from CSS var if present
 
-  // Apply initial colors from CSS var if present
-  updateColorsFromCss();
+  updateColorsFromCss(); // ================================================================== // Fungsi Helper (dipanggil dari Python / UI) // ==================================================================
 
-  // ==================================================================
-  // Fungsi Helper (dipanggil dari Python / UI)
-  // ==================================================================
   window.showPage = (pageId) => {
     for (const id in pages) {
       if (pages.hasOwnProperty(id) && pages[id]) {
@@ -228,7 +205,10 @@ window.addEventListener("pywebviewready", () => {
     if (pageId === "home-page") {
       if (inputPlayer1) inputPlayer1.value = "";
       if (inputPlayer2) inputPlayer2.value = "";
-      if (homeError) homeError.textContent = "";
+      if (homeError) homeError.textContent = ""; // PENYESUAIAN: Reset nama di score box saat kembali ke home
+
+      if (player1NameLabel) player1NameLabel.textContent = "Player 1";
+      if (player2NameLabel) player2NameLabel.textContent = "Player 2";
     }
   };
 
@@ -252,11 +232,8 @@ window.addEventListener("pywebviewready", () => {
       const name = player === "X" ? "Player 1" : "Player 2";
       if (labelStatus) labelStatus.textContent = `Turn: ${name} (${player})`;
     }
-  };
+  }; // ================================================================== // Gambar pada Canvas // ==================================================================
 
-  // ==================================================================
-  // Gambar pada Canvas
-  // ==================================================================
   window.drawMove = (index, player) => {
     const row = Math.floor(index / 3);
     const col = index % 3;
@@ -349,6 +326,7 @@ window.addEventListener("pywebviewready", () => {
       y0 = padding;
       x1 = padding;
       y1 = canvas.height - padding;
+      _;
     }
 
     ctx.strokeStyle = COLOR_WIN_LINE;
@@ -375,11 +353,8 @@ window.addEventListener("pywebviewready", () => {
     ctx.lineTo(x0, y0);
     ctx.stroke();
     animate();
-  };
+  }; // ================================================================== // Game outcome handlers // ==================================================================
 
-  // ==================================================================
-  // Game outcome handlers
-  // ==================================================================
   window.handleWin = (pattern, player) => {
     drawWinnerLine(pattern);
 
@@ -429,11 +404,8 @@ window.addEventListener("pywebviewready", () => {
         window.resetBoardUI();
       }
     }, 1000);
-  };
+  }; // ================================================================== // Event listeners (Main menu, Home, Game, Modals) // ==================================================================
 
-  // ==================================================================
-  // Event listeners (Main menu, Home, Game, Modals)
-  // ==================================================================
   if (btnMainMenuStart) {
     btnMainMenuStart.addEventListener("click", () => {
       if (typeof window.showPage === "function") window.showPage("home-page");
@@ -473,8 +445,10 @@ window.addEventListener("pywebviewready", () => {
         player1Score = 0;
         player2Score = 0;
         if (player1ScoreEl) player1ScoreEl.textContent = "0";
-        if (player2ScoreEl) player2ScoreEl.textContent = "0";
+        if (player2ScoreEl) player2ScoreEl.textContent = "0"; // PERBAIKAN: Set nama di score box di sini
 
+        if (player1NameLabel) player1NameLabel.textContent = name1;
+        if (player2NameLabel) player2NameLabel.textContent = name2; // ===========================================
         if (
           window.pywebview &&
           window.pywebview.api &&
@@ -498,9 +472,8 @@ window.addEventListener("pywebviewready", () => {
       if (typeof window.showPage === "function")
         window.showPage("main-menu-page");
     });
-  }
+  } // canvas click -> kirim cell index ke Python
 
-  // canvas click -> kirim cell index ke Python
   if (canvas) {
     canvas.addEventListener("click", (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -580,20 +553,18 @@ window.addEventListener("pywebviewready", () => {
 
       if (player1Score > player2Score) {
         playPySound("win");
-        if (labelTitle) labelTitle.textContent = "FINAL WINNER";
-        // Gunakan .textContent agar menjadi satu baris
+        if (labelTitle) labelTitle.textContent = "FINAL WINNER"; // Gunakan .textContent agar menjadi satu baris
         if (labelSubtitle)
           labelSubtitle.textContent = `${p1Name} (X) With Score: ${player1Score}`;
       } else if (player2Score > player1Score) {
         playPySound("win");
-        if (labelTitle) labelTitle.textContent = "FINAL WINNER";
-        // Gunakan .textContent agar menjadi satu baris
+        if (labelTitle) labelTitle.textContent = "FINAL WINNER"; // Gunakan .textContent agar menjadi satu baris
         if (labelSubtitle)
           labelSubtitle.textContent = `${p2Name} (O) With Score: ${player2Score}`;
+        t;
       } else {
         playPySound("draw");
-        if (labelTitle) labelTitle.textContent = "GAME IS A DRAW";
-        // Tetap gunakan .innerHTML agar <br> berfungsi (dua baris)
+        if (labelTitle) labelTitle.textContent = "GAME IS A DRAW"; // Tetap gunakan .innerHTML agar <br> berfungsi (dua baris)
         if (labelSubtitle)
           labelSubtitle.innerHTML = `Final Score: <br> ${p1Name} (${player1Score}) - ${p2Name} (${player2Score})`;
       }
@@ -628,9 +599,8 @@ window.addEventListener("pywebviewready", () => {
         typeof window.pywebview.api.reset_board_from_js === "function"
       ) {
         window.pywebview.api.reset_board_from_js();
-      }
+      } // PERBAIKAN: Pindahkan showPage ke sini.
 
-      // PERBAIKAN: Pindahkan showPage ke sini.
       if (typeof window.showPage === "function") {
         window.showPage("game-page");
       }
@@ -649,11 +619,8 @@ window.addEventListener("pywebviewready", () => {
         window.showPage("home-page");
       }
     });
-  }
+  } // ================================================================== // Modal (Credits & Settings) listeners // ==================================================================
 
-  // ==================================================================
-  // Modal (Credits & Settings) listeners
-  // ==================================================================
   if (btnMainMenuCredits) {
     btnMainMenuCredits.addEventListener("click", (e) => {
       e.preventDefault();
@@ -685,14 +652,10 @@ window.addEventListener("pywebviewready", () => {
     settingsModal.addEventListener("click", (e) => {
       if (e.target === settingsModal) settingsModal.style.display = "none";
     });
-  }
+  } // ================================================================== // Audio controls (volume + mute toggle) // ==================================================================
 
-  // ==================================================================
-  // Audio controls (volume + mute toggle)
-  // ==================================================================
-  let isProgrammaticallyChanging = false;
+  let isProgrammaticallyChanging = false; // PERBAIKAN: Fungsi baru untuk mengatur SEMUA suara
 
-  // PERBAIKAN: Fungsi baru untuk mengatur SEMUA suara
   function setAllVolumes(normalizedVolume) {
     // 1. Kirim ke Python (untuk win, draw, score)
     if (
@@ -705,9 +668,8 @@ window.addEventListener("pywebviewready", () => {
       } catch (e) {
         console.error("Gagal mengatur volume Python:", e);
       }
-    }
+    } // 2. Terapkan ke JS (untuk click)
 
-    // 2. Terapkan ke JS (untuk click)
     if (soundClick) {
       soundClick.volume = normalizedVolume;
     }
@@ -719,9 +681,8 @@ window.addEventListener("pywebviewready", () => {
     if (soundToggle) soundToggle.checked = true;
     if (volumeSlider) volumeSlider.disabled = false;
     if (parseFloat(savedVolume) === 0) savedVolume = 0.5;
-    if (volumeSlider) volumeSlider.value = parseFloat(savedVolume) * 100;
+    if (volumeSlider) volumeSlider.value = parseFloat(savedVolume) * 100; // Gunakan fungsi baru
 
-    // Gunakan fungsi baru
     setAllVolumes(savedVolume);
 
     try {
@@ -737,9 +698,8 @@ window.addEventListener("pywebviewready", () => {
 
     try {
       localStorage.setItem("ticTacToeVolume", normalizedVolume);
-    } catch (e) {}
+    } catch (e) {} // Gunakan fungsi baru
 
-    // Gunakan fungsi baru
     setAllVolumes(normalizedVolume);
 
     if (normalizedVolume === 0 && soundToggle && soundToggle.checked) {
@@ -774,19 +734,15 @@ window.addEventListener("pywebviewready", () => {
       }
       isProgrammaticallyChanging = true;
       if (volumeSlider) volumeSlider.value = parseFloat(savedVolume) * 100;
-      isProgrammaticallyChanging = false;
+      isProgrammaticallyChanging = false; // Gunakan fungsi baru
 
-      // Gunakan fungsi baru
       setAllVolumes(savedVolume);
     }
   }
 
   if (volumeSlider) volumeSlider.addEventListener("input", handleSliderInput);
-  if (soundToggle) soundToggle.addEventListener("change", handleToggleChange);
+  if (soundToggle) soundToggle.addEventListener("change", handleToggleChange); // ================================================================== // Custom color pickers for X and O // ==================================================================
 
-  // ==================================================================
-  // Custom color pickers for X and O
-  // ==================================================================
   if (xColorPicker) {
     xColorPicker.addEventListener("input", () => {
       COLOR_X = xColorPicker.value;
@@ -803,12 +759,10 @@ window.addEventListener("pywebviewready", () => {
         document.documentElement.style.setProperty("--o-color", COLOR_O);
       } catch (e) {}
       drawGrid();
+      _;
     });
-  }
+  } // ================================================================== // Background color/image picker // ==================================================================
 
-  // ==================================================================
-  // Background color/image picker
-  // ==================================================================
   const BG_IMAGE_URL = "assets/images/bg1.jpg"; // Default path
 
   function applyBackgroundType(typeOrColor) {
@@ -835,11 +789,8 @@ window.addEventListener("pywebviewready", () => {
         localStorage.removeItem("ticTacToeBgPath"); // Hapus path gambar
       } catch (e) {}
     }
-  }
+  } // ================================================================== // Dukungan background bergambar (BG1, BG2, BG3, dst.) // ==================================================================
 
-  // ==================================================================
-  // Dukungan background bergambar (BG1, BG2, BG3, dst.)
-  // ==================================================================
   const bgButtons = document.querySelectorAll(".bg-img-btn");
   bgButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -858,44 +809,37 @@ window.addEventListener("pywebviewready", () => {
         } catch (e) {}
       }
     });
-  });
+  }); // Saat startup, cek apakah user sebelumnya pakai gambar custom
 
-  // Saat startup, cek apakah user sebelumnya pakai gambar custom
   window.addEventListener("DOMContentLoaded", () => {
     try {
       const savedType = localStorage.getItem("ticTacToeBg");
       const savedPath = localStorage.getItem("ticTacToeBgPath");
       const bgEl = document.querySelector(".background");
       const overlay = document.querySelector(".background-overlay");
-      if (!bgEl) return;
+      if (!bgEl) return; // 1. Jika ada path gambar yg tersimpan, gunakan itu.
 
-      // 1. Jika ada path gambar yg tersimpan, gunakan itu.
       if (savedType === "image" && savedPath) {
         bgEl.style.backgroundImage = `url('${savedPath}')`;
         bgEl.style.backgroundColor = "";
         bgEl.style.backgroundSize = "cover";
         if (overlay) overlay.style.display = "";
-      }
-      // 2. Jika tidak ada path, tapi tipenya adalah warna, gunakan warna itu.
+      } // 2. Jika tidak ada path, tapi tipenya adalah warna, gunakan warna itu.
       else if (savedType && savedType.startsWith("#")) {
         bgEl.style.backgroundImage = "none";
         bgEl.style.backgroundColor = savedType;
         bgEl.style.backgroundSize = "cover";
         if (overlay) overlay.style.display = "none";
-      }
-      // 3. Jika tidak ada yg tersimpan (pertama kali main), CSS default (bg1.jpg)
-      //    akan otomatis diterapkan.
+      } // 3. Jika tidak ada yg tersimpan (pertama kali main), CSS default (bg1.jpg) //    akan otomatis diterapkan.
     } catch (e) {}
-  });
+  }); // Listener untuk tombol "Terapkan" warna custom
 
-  // Listener untuk tombol "Terapkan" warna custom
   if (bgApplyBtn && bgColorPicker) {
     bgApplyBtn.addEventListener("click", () => {
       applyBackgroundType(bgColorPicker.value);
     });
-  }
+  } // Muat pengaturan audio, gambar grid, dan tampilkan halaman utama
 
-  // Muat pengaturan audio, gambar grid, dan tampilkan halaman utama
   loadAudioSettings();
   drawGrid();
   if (typeof window.showPage === "function") window.showPage("main-menu-page");
